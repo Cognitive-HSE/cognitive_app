@@ -1,6 +1,6 @@
 import 'package:cognitive/features/registration/registration_screen.dart';
-import 'package:cognitive/features/registration/tests/one_test_screen.dart';
-import 'package:cognitive/features/registration/tests/test_description_screen.dart';
+import 'package:cognitive/features/tests/one_test_screen.dart';
+import 'package:cognitive/features/tests/test_description_screen.dart';
 import 'package:cognitive/features/tests_list/tests_list_screen.dart';
 import '../features/registration/success_reg_screen.dart';
 

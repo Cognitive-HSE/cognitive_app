@@ -15,7 +15,6 @@ class _SuccessRegScreenState extends State<SuccessRegScreen> {
 
   @override
   void dispose() {
-
     super.dispose();
   }
 
@@ -36,7 +35,6 @@ class _SuccessRegScreenState extends State<SuccessRegScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
   
           children: [
-
             const Text(
               'Вы успешно зарегистрировались!',
             ),

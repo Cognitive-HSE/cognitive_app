@@ -32,7 +32,9 @@ class _TestsListScreenState extends State<TestsListScreen> {
 
       appBar: AppBar(
         title: const Text('Список тестов'),
+        centerTitle: true,
       ),
+
       body: ListView.separated(
         itemCount: 10,
         separatorBuilder: (context, index) => const Divider(),

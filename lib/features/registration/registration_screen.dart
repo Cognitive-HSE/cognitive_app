@@ -28,6 +28,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
     // Добавить логику регистрации пользователя в будущем
     debugPrint('Name: $name, Password: $password');
+    
     if (name == '123' && password == '123') {
       Navigator.of(context).pushNamed(
         '/successReg',
@@ -43,6 +44,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         title: const Text('Регистрация'),
         centerTitle: true,
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
 
@@ -62,7 +64,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               isPassword: true,
               controller: _passwordController,
             ),
+
             const SizedBox(height: 20.0),
+
             ElevatedButton(
               onPressed: _register,
               child: const Text('Зарегистрироваться!'),

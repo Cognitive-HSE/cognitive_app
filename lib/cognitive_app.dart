@@ -9,7 +9,7 @@ class CognitiveApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Registration',
+      //title: 'Registration',
       theme: theme,
       routes: routes,
     );
