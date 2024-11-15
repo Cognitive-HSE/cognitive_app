@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class OneTestScreen extends StatefulWidget {
   const OneTestScreen({super.key});
@@ -70,13 +71,18 @@ class _OneTestScreenState extends State<OneTestScreen> {
 //генерация случайного ряда русских букв
   void _generateCharacters(int numberOfChar) {
     int i = 0;
+    var randomCharacter = Random();
+    var indices = List.generate(wordsToFind.length,
+        (int k) => randomCharacter.nextInt(199 - wordsToFind[i].length));
     characters = List.generate(numberOfChar, (index) {
       // Генерируем случайные буквы, вставляя слова
-      if (index % 10 == 0 && i < wordsToFind.length) {
-        return wordsToFind[i++];
+      if (i < wordsToFind.length) {
+        if (index == indices[i]) {
+          return wordsToFind[i++];
+        }
       }
-      return String.fromCharCode(
-          1040 + index % 32); // Псевдослучайные русские буквы
+      return String.fromCharCode(1040 +
+          randomCharacter.nextInt(32) % 32); // Псевдослучайные русские буквы
     }).expand((s) => s.split("")).toList();
     setState(() {});
   }
