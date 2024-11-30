@@ -1,25 +1,39 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'dart:async';
 
 class OneTestScreen extends StatefulWidget {
-  const OneTestScreen({super.key});
-
   @override
   State<OneTestScreen> createState() => _OneTestScreenState();
 }
 
 class _OneTestScreenState extends State<OneTestScreen> {
   // Символы и выделенные индексы
+  final _formKey = GlobalKey<FormState>();
   List<String> characters = [];
   List<int> selectedIndexes = [];
   List<String> wordsToFind = [
     'КОТ',
-    'СЛОН'
+    'СЛОН',
+    'ДОМ',
+    'ГОРН',
+    'ПОПКОРН',
+    'КРАБ',
+    'РАБ'
   ]; // Список слов, которые нужно найти
+  int seconds = 0;
+  late Timer timer;
+
   @override
   void initState() {
     super.initState();
     _generateCharacters(200);
+    seconds = 0;
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      setState(() {
+        seconds++;
+      });
+    });
   }
 
 // Выделенные буквы
@@ -34,7 +48,7 @@ class _OneTestScreenState extends State<OneTestScreen> {
   }
 
 //сколько выделено слов
-  void _checkWords() {
+  void checkWords() {
     int foundWords = 0;
 
     for (int j = 0; j < wordsToFind.length; j++) {
@@ -55,11 +69,35 @@ class _OneTestScreenState extends State<OneTestScreen> {
         foundWords++;
       }
     }
+  }
+
+  void _checkWords() {
+    int foundWords = 0;
+    for (int i = 0; i < characters.length; ++i) {
+      if (selectedIndexes.contains(i)) {
+        if (List.generate(wordsToFind.length, (int k) => wordsToFind[k][0])
+            .contains(characters[i])) {
+          for (int j = 0; j < wordsToFind.length; ++j) {
+            if (characters.sublist(i, i + wordsToFind[j].length).join() ==
+                wordsToFind[j]) {
+              if (selectedIndexes.toSet().containsAll(
+                  List.generate(wordsToFind[j].length, (int m) => i + m))) {
+                if (!(selectedIndexes.contains(i + wordsToFind[j].length) ||
+                    selectedIndexes.contains(i - 1))) {
+                  foundWords++;
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
 
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        content: Text("Words found: $foundWords"),
+        content: Text("Words found: $foundWords\n Время в секундах: $seconds"),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context), child: const Text('OK'))
@@ -77,7 +115,7 @@ class _OneTestScreenState extends State<OneTestScreen> {
     characters = List.generate(numberOfChar, (index) {
       // Генерируем случайные буквы, вставляя слова
       if (i < wordsToFind.length) {
-        if (index == indices[i]) {
+        if (indices.contains(index)) {
           return wordsToFind[i++];
         }
       }
@@ -89,6 +127,7 @@ class _OneTestScreenState extends State<OneTestScreen> {
 
   @override
   void dispose() {
+    timer?.cancel();
     super.dispose();
   }
 
@@ -104,10 +143,12 @@ class _OneTestScreenState extends State<OneTestScreen> {
         title: const Text('Тест Мюнстерберга'),
         centerTitle: true,
       ),
-      body: Center(
+      body: Form(
+        key: _formKey,
         child: Column(
           children: [
             const Text('Выделите слова'),
+            Text('Прошло времени: $seconds секунд'),
             const SizedBox(
               height: 30,
             ),
