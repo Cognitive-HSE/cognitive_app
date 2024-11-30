@@ -10,5 +10,6 @@ final routes = {
         '/successReg': (context) => const SuccessRegScreen(),
         '/successReg/testList': (context) => const TestsListScreen(),
         '/successReg/testList/testDescription': (context) => const TestDescriptionScreen(), 
-        '/successReg/testList/testDescription/oneTest': (context) => OneTestScreen(),
+        //'/successReg/testList/testDescription/oneTest': (context) => OneTestScreen(),
+        '/successReg/testList/testDescription/oneTest': (context) => const BirdtestScreen()
       };

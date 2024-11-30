@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cognitive/router/router.dart';
 import 'package:flutter/material.dart';
 
 class BirdtestScreen extends StatefulWidget {
@@ -20,6 +21,9 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
   String birdLabel = '';
   String birdDirectionStr = '';
   var rightAnswers = 0;
+
+  int timerSeconds = 60;
+  late Timer timer;
   
 
 
@@ -68,7 +72,7 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
   }
 
   void handleTimeout() {
-    
+
   }
 
   String getBirdStrColor() {
@@ -77,6 +81,12 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
 
   String getBirdStrDirection() {
     return birdDirections[birdDirection];
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 
 //set start bird and label
@@ -90,6 +100,33 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
     //set start label
     final startBirdLabel = getBirdStrColor(); //label key = color value 
     birdLabel = birdLabels[startBirdLabel];
+    //setup timer
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      if (timerSeconds == 1) {
+        timer.cancel();
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            content: Text("Тест завершен!\nВаш результат: $rightAnswers"),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                     Navigator.pushNamedAndRemoveUntil(
+                      context,
+                       '/successReg/testList',
+                        (route) => false
+                      );
+                     },
+                  child: const Text('Вернуться к тестам'),
+              ),
+            ],
+          ),
+        );
+      }
+      setState(() {
+        timerSeconds--;
+      });
+    });
   }
 
   @override
@@ -98,7 +135,6 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
     final birdWidth = 0.5 * (screenSize.width * 0.45 + screenSize.height * 0.45);
     final arrowSize = birdWidth * 0.23;
     final iconSize = 0.5 * (screenSize.width * 0.05 + screenSize.height * 0.05);
-    Timer(const Duration(seconds: 60), handleTimeout);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -127,9 +163,9 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
                         height: iconSize,
                       ),
                       const SizedBox(width: 5),
-                      const Text(
-                        '00:59',
-                        style: TextStyle(
+                      Text(
+                        '$timerSeconds',
+                        style: const TextStyle(
                           color: Colors.black,
                           fontSize: 20,
                           fontWeight: FontWeight.w600,

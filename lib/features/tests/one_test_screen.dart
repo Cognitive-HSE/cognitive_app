@@ -3,6 +3,8 @@ import 'dart:math';
 import 'dart:async';
 
 class OneTestScreen extends StatefulWidget {
+  const OneTestScreen({super.key});
+
   @override
   State<OneTestScreen> createState() => _OneTestScreenState();
 }
