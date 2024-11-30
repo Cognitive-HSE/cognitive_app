@@ -62,7 +62,25 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
-
+  assets:
+    - assets/birdTest/blueBirdUp.png
+    - assets/birdTest/blueBirdDown.png
+    - assets/birdTest/blueBirdLeft.png
+    - assets/birdTest/blueBirdRight.png
+    - assets/birdTest/redBirdUp.png
+    - assets/birdTest/redBirdDown.png
+    - assets/birdTest/redBirdLeft.png
+    - assets/birdTest/redBirdRight.png
+    - assets/birdTest/skyBg.jpg
+    - assets/birdTest/testUpArrow.png
+    - assets/birdTest/testDownArrow.png
+    - assets/birdTest/testLeftArrow.png
+    - assets/birdTest/testRightArrow.png
+    - assets/birdTest/skyBackground.jpg
+    - assets/birdTest/heartIcon.png
+    - assets/birdTest/clockIcon.png
+    
+    
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

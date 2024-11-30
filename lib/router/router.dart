@@ -1,4 +1,5 @@
 import 'package:cognitive/features/registration/registration_screen.dart';
+import 'package:cognitive/features/tests/birdTest/bird_test_screen.dart';
 import 'package:cognitive/features/tests/one_test_screen.dart';
 import 'package:cognitive/features/tests/test_description_screen.dart';
 import 'package:cognitive/features/tests_list/tests_list_screen.dart';
@@ -10,4 +11,5 @@ final routes = {
         '/successReg/testList': (context) => const TestsListScreen(),
         '/successReg/testList/testDescription': (context) => const TestDescriptionScreen(), 
         '/successReg/testList/testDescription/oneTest': (context) => const OneTestScreen(),
+        //'/successReg/testList/testDescription/oneTest': (context) => const BirdtestScreen()
       };
