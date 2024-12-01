@@ -23,6 +23,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
     'КРАБ',
     'РАБ'
   ]; // Список слов, которые нужно найти
+  int foundWords = 0;
   int seconds = 0;
   late Timer timer;
 
@@ -51,7 +52,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
 
 //сколько выделено слов
   void checkWords() {
-    int foundWords = 0;
+    
 
     for (int j = 0; j < wordsToFind.length; j++) {
       var word = wordsToFind[j];
@@ -69,7 +70,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
       }
       if (isWordFound) {
         foundWords++;
-      }
+      } 
     }
   }
 
