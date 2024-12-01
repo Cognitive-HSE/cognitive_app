@@ -31,7 +31,7 @@ class _OneTestScreenState extends State<OneTestScreen> {
     super.initState();
     _generateCharacters(200);
     seconds = 0;
-    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       setState(() {
         seconds++;
       });
@@ -98,8 +98,9 @@ class _OneTestScreenState extends State<OneTestScreen> {
 
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) => AlertDialog(
-        content: Text("Words found: $foundWords\n Время в секундах: $seconds"),
+        content: Text("Найдено слов: $foundWords\nВремя в секундах: $seconds"),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context), child: const Text('OK'))
@@ -129,13 +130,8 @@ class _OneTestScreenState extends State<OneTestScreen> {
 
   @override
   void dispose() {
-    timer?.cancel();
+    timer.cancel();
     super.dispose();
-  }
-
-  void _finish() {
-    debugPrint("User wants to finish test");
-    Navigator.of(context).pushNamed('/successReg/testList');
   }
 
   @override
@@ -150,7 +146,7 @@ class _OneTestScreenState extends State<OneTestScreen> {
         child: Column(
           children: [
             const Text('Выделите слова'),
-            Text('Прошло времени: $seconds секунд'),
+            Text('Прошло $seconds секунд'),
             const SizedBox(
               height: 30,
             ),

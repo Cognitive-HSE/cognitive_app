@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:cognitive/router/router.dart';
 import 'package:flutter/material.dart';
 
 class BirdtestScreen extends StatefulWidget {
@@ -12,15 +11,17 @@ class BirdtestScreen extends StatefulWidget {
 }
 
 class _BirdtestScreenState extends State<BirdtestScreen> {
-  Map birdDirections = {0: 'Up', 1: 'Right', 2: 'Down', 3: 'Left'}; //up, right, down, left
-  Map birdColors = {0: 'blue', 1: 'red'}; //blue, red
+  Map birdDirections = {0: 'Up', 1: 'Right', 2: 'Down', 3: 'Left'};
+  Map birdColors = {0: 'blue', 1: 'red'};
   Map birdLabels = {'blue': 'Куда летит ласточка?', 'red': 'Откуда летит ласточка?'};
   var birdColor = Random().nextInt(2);
   var birdDirection = Random().nextInt(4);
   String birdImage = '';
   String birdLabel = '';
   String birdDirectionStr = '';
+  var allAnswers = 0;
   var rightAnswers = 0;
+  var heartsCount = 3;
 
   int timerSeconds = 60;
   late Timer timer;
@@ -47,14 +48,6 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
     birdDirection = Random().nextInt(4);
   }
 
-  void checkRightAnswer(int arrowIndex) {
-    if (birdColor == 0 && birdDirection == arrowIndex) {
-      rightAnswers += 1;
-    } else if (birdColor == 1 && birdDirection == (arrowIndex+2) % 4) {
-        rightAnswers += 1;
-      }
-  }
-
   void showNewBirdImage() {
     var color = getBirdStrColor();
     var direction = getBirdStrDirection();
@@ -71,8 +64,53 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
     changeBirdLabel();
   }
 
-  void handleTimeout() {
+  void takeLife() {
+    setState(() {
+      heartsCount--;
+    });
+    if (heartsCount <= 0) {
+      timer.cancel();
+      showGameOverScreen();
+    }
+  }
 
+  void showGameOverScreen() {
+    var accuracy = 0;
+    if (allAnswers != 0) {
+    accuracy = (rightAnswers/allAnswers * 100).round();
+    } 
+    showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => AlertDialog(
+            content: Text(
+              "Тест завершен!\nПравильно: $rightAnswers из $allAnswers\nТочность: $accuracy%"
+              ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                     Navigator.pushNamedAndRemoveUntil(
+                      context,
+                       '/successReg/testList',
+                        (route) => false
+                      );
+                     },
+                  child: const Text('Вернуться к тестам'),
+              ),
+            ],
+          ),
+        );
+  }
+
+  bool checkRightAnswer(int arrowIndex) {
+    if (birdColor == 0 && birdDirection == arrowIndex) {
+      rightAnswers += 1;
+      return true;
+    } else if (birdColor == 1 && birdDirection == (arrowIndex+2) % 4) {
+        rightAnswers += 1;
+        return true;
+      }
+    return false;
   }
 
   String getBirdStrColor() {
@@ -101,27 +139,10 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
     final startBirdLabel = getBirdStrColor(); //label key = color value 
     birdLabel = birdLabels[startBirdLabel];
     //setup timer
-    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       if (timerSeconds == 1) {
         timer.cancel();
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            content: Text("Тест завершен!\nВаш результат: $rightAnswers"),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                     Navigator.pushNamedAndRemoveUntil(
-                      context,
-                       '/successReg/testList',
-                        (route) => false
-                      );
-                     },
-                  child: const Text('Вернуться к тестам'),
-              ),
-            ],
-          ),
-        );
+        showGameOverScreen();
       }
       setState(() {
         timerSeconds--;
@@ -190,16 +211,17 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
                         textDirection: TextDirection.ltr,
                       ),
                       const SizedBox(width: 5),
-                      ...List.generate(3, (index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: Image.asset(
-                            "assets/birdTest/heartIcon.png",
-                            width: iconSize,
-                            height: iconSize,
-                          ),
-                        );
-                      }),
+                      if (heartsCount > 0)
+                        ...List.generate(heartsCount, (index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 2),
+                            child: Image.asset(
+                              "assets/birdTest/heartIcon.png",
+                              width: iconSize,
+                              height: iconSize,
+                            ),
+                          );
+                        }),
                     ],
                   ),
                   ),
@@ -211,7 +233,7 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
                   Row(
                     children: [
                       Text(
-                        'Счет: $rightAnswers',
+                        'Правильно: $rightAnswers',
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 20,
@@ -261,7 +283,11 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
                 GestureDetector(
                   onTap: () {
                     var arrowIndex = 0;
-                    checkRightAnswer(arrowIndex);                
+                    var boolAnswer = checkRightAnswer(arrowIndex); 
+                    allAnswers++;  
+                    if (boolAnswer == false) {
+                      takeLife();
+                    }             
                     continueTest();
                   },
                   child: Image.asset(
@@ -278,7 +304,11 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
                     GestureDetector(
                       onTap: () {
                         var arrowIndex = 3;
-                        checkRightAnswer(arrowIndex);                
+                        var boolAnswer = checkRightAnswer(arrowIndex); 
+                        allAnswers++;   
+                        if (boolAnswer == false) {
+                          takeLife();
+                        }                    
                         continueTest();
                       },
                       child: Image.asset(
@@ -291,7 +321,12 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
                     GestureDetector(
                       onTap: () {
                         var arrowIndex = 2;
-                        checkRightAnswer(arrowIndex);                
+
+                        var boolAnswer = checkRightAnswer(arrowIndex); 
+                        allAnswers++;   
+                        if (boolAnswer == false) {
+                          takeLife();
+                        }               
                         continueTest();
                       },
                       child: Image.asset(
@@ -304,7 +339,11 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
                     GestureDetector(
                       onTap: () {
                         var arrowIndex = 1;
-                        checkRightAnswer(arrowIndex);                
+                        var boolAnswer = checkRightAnswer(arrowIndex);  
+                        allAnswers++;  
+                        if (boolAnswer == false) {
+                          takeLife();
+                        }                
                         continueTest();
                       },
                       child: Image.asset(

@@ -28,7 +28,7 @@ class _TestDescriptionScreenState extends State<TestDescriptionScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text('Описание теста. \n Вам нужно найти слова'),
+            const Text('Описание теста. \nВам нужно найти слова'),
             ElevatedButton(
               onPressed: _goToFinishTest,
               child: const Text('Начать тест'),
