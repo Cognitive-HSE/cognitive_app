@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
 
-class OneTestScreen extends StatefulWidget {
-  const OneTestScreen({super.key});
+class MunstTestScreen extends StatefulWidget {
+  const MunstTestScreen({super.key});
 
   @override
-  State<OneTestScreen> createState() => _OneTestScreenState();
+  State<MunstTestScreen> createState() => _MunstTestScreenState();
 }
 
-class _OneTestScreenState extends State<OneTestScreen> {
+class _MunstTestScreenState extends State<MunstTestScreen> {
   // Символы и выделенные индексы
   final _formKey = GlobalKey<FormState>();
   List<String> characters = [];
@@ -95,7 +95,7 @@ class _OneTestScreenState extends State<OneTestScreen> {
         }
       }
     }
-
+    timer.cancel(); // stop timer when results shown
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -103,7 +103,14 @@ class _OneTestScreenState extends State<OneTestScreen> {
         content: Text("Найдено слов: $foundWords\nВремя в секундах: $seconds"),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context), child: const Text('OK'))
+              onPressed: () {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/testList',
+                  (route) => false
+                );
+              }, 
+              child: const Text('OK'))
         ],
       ),
     );

@@ -20,9 +20,11 @@ class _SuccessRegScreenState extends State<SuccessRegScreen> {
 
   void _goToTests() {
     debugPrint("User are going to tests");
-    Navigator.of(context).pushNamed(
-        '/successReg/testList',
-      );
+    Navigator.pushNamedAndRemoveUntil(
+      context, 
+      '/testList', 
+      (route) => false
+    );
   }
 
   @override

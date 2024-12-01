@@ -11,19 +11,27 @@ class TestsListScreen extends StatefulWidget {
 }
 
 class _TestsListScreenState extends State<TestsListScreen> {
-
+  Map tests = {0: "Тест Мюнстерберга", 1: "Тест \"Ласточка\""};
 
   @override
   void dispose() {
-
     super.dispose();
   }
 
-  void _goToChosenTest() {
+  void _goToChosenTest(int testIndex) {
+
     debugPrint("User are going to chosen test");
-    Navigator.of(context).pushNamed(
-      '/successReg/testList/testDescription',
-    );
+
+    if (testIndex == 0) {
+      Navigator.of(context).pushNamed(
+        '/testList/munstTestDescription',
+      );
+    }
+    if (testIndex == 1) {
+      Navigator.of(context).pushNamed(
+        '/testList/birdTestDescription',
+      );
+    }
   }
 
   @override
@@ -36,36 +44,23 @@ class _TestsListScreenState extends State<TestsListScreen> {
       ),
 
       body: ListView.separated(
-        itemCount: 10,
+        itemCount: tests.length,
         separatorBuilder: (context, index) => const Divider(),
-        itemBuilder: (context, i) => ListTile(
-          title: Text('Test $i'),
-          trailing: const Icon(Icons.keyboard_double_arrow_right),
-          onTap: () {
-          _goToChosenTest();
-          },
-        ),
+        itemBuilder: (context, i) { 
+          // Получаем ключ и значение из словаря
+          final index = tests.keys.elementAt(i);
+          final test = tests[index];
 
+          return ListTile(
+            title: Text('$index) $test'),
+            trailing: const Icon(Icons.keyboard_double_arrow_right),
+            onTap: () {
+            _goToChosenTest(index);
+            },
+          );
+        },
       ),
     );
   }
   
-  
-
-        
-          //     final coin = state.coinsList[i];
-        
-          //     return CryptoCoinTile(coin: coin);
-          //     },, 
-          // padding: const EdgeInsets.only(top: 16),
-          //   itemCount: state.coinsList.length,
-          //   separatorBuilder: (context, index) => Divider(color: theme.dividerColor),
-            
-          //   itemBuilder: (context, i) {
-        
-          //     final coin = state.coinsList[i];
-        
-          //     return CryptoCoinTile(coin: coin);
-          //     },
-          //   );
 }
