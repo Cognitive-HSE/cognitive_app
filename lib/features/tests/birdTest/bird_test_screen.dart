@@ -25,6 +25,8 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
 
   int timerSeconds = 60; // test duration
   late Timer timer;
+
+  Map<int, bool> buttonPressed = {0: false, 1: false, 2: false, 3: false};
   
 
 
@@ -100,6 +102,25 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
             ],
           ),
         );
+  }
+
+    void onButtonPressed(int index) {
+    setState(() {
+      buttonPressed[index] = true;
+    });
+
+    Future.delayed(const Duration(milliseconds: 100), () {
+      setState(() {
+        buttonPressed[index] = false;
+      });
+    });
+
+    var boolAnswer = checkRightAnswer(index);
+    allAnswers++;
+    if (!boolAnswer) {
+      takeLife();
+    }
+    continueTest();
   }
 
   bool checkRightAnswer(int arrowIndex) {
@@ -274,26 +295,22 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
           ),
 
           // Кнопки-стрелки фиксируются в нижней части экрана
-          Positioned(
-            bottom: 20, // Отступ от нижнего края
+                    Positioned(
+            bottom: 20,
             left: 0,
             right: 0,
             child: Column(
               children: [
                 GestureDetector(
-                  onTap: () {
-                    var arrowIndex = 0;
-                    var boolAnswer = checkRightAnswer(arrowIndex); 
-                    allAnswers++;  
-                    if (boolAnswer == false) {
-                      takeLife();
-                    }             
-                    continueTest();
-                  },
-                  child: Image.asset(
-                    'assets/birdTest/testUpArrow.png',
-                    width: arrowSize,
-                    height: arrowSize,
+                  onTap: () => onButtonPressed(0),
+                  child: AnimatedScale(
+                    scale: buttonPressed[0]! ? 0.9 : 1.0,
+                    duration: const Duration(milliseconds: 150),
+                    child: Image.asset(
+                      'assets/birdTest/testUpArrow.png',
+                      width: arrowSize,
+                      height: arrowSize,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -302,54 +319,41 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: () {
-                        var arrowIndex = 3;
-                        var boolAnswer = checkRightAnswer(arrowIndex); 
-                        allAnswers++;   
-                        if (boolAnswer == false) {
-                          takeLife();
-                        }                    
-                        continueTest();
-                      },
-                      child: Image.asset(
-                        'assets/birdTest/testLeftArrow.png',
-                        width: arrowSize,
-                        height: arrowSize,
+                      onTap: () => onButtonPressed(3),
+                      child: AnimatedScale(
+                        scale: buttonPressed[3]! ? 0.9 : 1.0,
+                        duration: const Duration(milliseconds: 150),
+                        child: Image.asset(
+                          'assets/birdTest/testLeftArrow.png',
+                          width: arrowSize,
+                          height: arrowSize,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 10),
                     GestureDetector(
-                      onTap: () {
-                        var arrowIndex = 2;
-
-                        var boolAnswer = checkRightAnswer(arrowIndex); 
-                        allAnswers++;   
-                        if (boolAnswer == false) {
-                          takeLife();
-                        }               
-                        continueTest();
-                      },
-                      child: Image.asset(
-                        'assets/birdTest/testDownArrow.png',
-                        width: arrowSize,
-                        height: arrowSize,
+                      onTap: () => onButtonPressed(2),
+                      child: AnimatedScale(
+                        scale: buttonPressed[2]! ? 0.9 : 1.0,
+                        duration: const Duration(milliseconds: 150),
+                        child: Image.asset(
+                          'assets/birdTest/testDownArrow.png',
+                          width: arrowSize,
+                          height: arrowSize,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 10),
                     GestureDetector(
-                      onTap: () {
-                        var arrowIndex = 1;
-                        var boolAnswer = checkRightAnswer(arrowIndex);  
-                        allAnswers++;  
-                        if (boolAnswer == false) {
-                          takeLife();
-                        }                
-                        continueTest();
-                      },
-                      child: Image.asset(
-                        'assets/birdTest/testRightArrow.png',
-                        width: arrowSize,
-                        height: arrowSize,
+                      onTap: () => onButtonPressed(1),
+                      child: AnimatedScale(
+                        scale: buttonPressed[1]! ? 0.9 : 1.0,
+                        duration: const Duration(milliseconds: 150),
+                        child: Image.asset(
+                          'assets/birdTest/testRightArrow.png',
+                          width: arrowSize,
+                          height: arrowSize,
+                        ),
                       ),
                     ),
                   ],
