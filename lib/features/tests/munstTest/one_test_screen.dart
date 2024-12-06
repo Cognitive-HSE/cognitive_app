@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
 
-class MunstTestScreen extends StatefulWidget {
-  const MunstTestScreen({super.key});
-
+class OneTestScreen extends StatefulWidget {
   @override
-  State<MunstTestScreen> createState() => _MunstTestScreenState();
+  State<OneTestScreen> createState() => _OneTestScreenState();
 }
 
-class _MunstTestScreenState extends State<MunstTestScreen> {
+class _OneTestScreenState extends State<OneTestScreen> {
   // Символы и выделенные индексы
   final _formKey = GlobalKey<FormState>();
   List<String> characters = [];
@@ -53,7 +51,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
     super.initState();
     _generateCharacters(200);
     seconds = 0;
-    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
       setState(() {
         seconds++;
       });
@@ -94,19 +92,14 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
         }
       }
     }
-    timer.cancel(); // stop timer when results shown
+
     showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (_) => AlertDialog(
-        content: Text("Найдено слов: $foundWords\nВремя в секундах: $seconds"),
+        content: Text("Words found: $foundWords\n Время в секундах: $seconds"),
         actions: [
           TextButton(
-              onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/testList', (route) => false);
-              },
-              child: const Text('OK'))
+              onPressed: () => Navigator.pop(context), child: const Text('OK'))
         ],
       ),
     );
@@ -123,7 +116,8 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
     characters = List.generate(numberOfChar, (index) {
       // Генерируем случайные буквы, вставляя слова
       if (i < wordsToFind.length) {
-        if (indices.contains(index) && !indices.contains(index + 1)) {
+        if (indices.contains(index) &&
+            !indices.contains(index + wordsToFind[i].length)) {
           return wordsToFind[i++];
         }
       }
@@ -139,6 +133,11 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
     super.dispose();
   }
 
+  void _finish() {
+    debugPrint("User wants to finish test");
+    Navigator.of(context).pushNamed('/successReg/testList');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,7 +150,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
         child: Column(
           children: [
             const Text('Выделите слова'),
-            Text('Прошло $seconds секунд'),
+            Text('Прошло времени: $seconds секунд'),
             const SizedBox(
               height: 30,
             ),
