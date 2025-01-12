@@ -1,3 +1,4 @@
+import 'package:cognitive/features/registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:cognitive/features/registration/widgets/widgets.dart';
 import 'package:postgres/postgres.dart';
@@ -27,6 +28,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     // Добавить логику регистрации пользователя в будущем
     debugPrint('Name: $name, Password: $password');
 
+    AuthManager.setUserLoggedIn(true);
+    final isLoggedIn = AuthManager.isUserLoggedIn();
+    debugPrint('Флаг isLoggedIn: $isLoggedIn');
+
     Navigator.of(context).pushNamed(
       '/successReg',
     );
@@ -47,11 +52,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
 
     // Если соединение установлено, выводим сообщение
-    print('Подключение к бд успешно!');
+    debugPrint('Подключение к бд успешно!');
     
   } catch (e) {
     // Обработка ошибок
-    print('Ошибка подключения к бд: $e');
+    debugPrint('Ошибка подключения к бд: $e');
   }
 }
 
