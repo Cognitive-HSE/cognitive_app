@@ -1,3 +1,4 @@
+import 'package:cognitive/features/registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
 
 class TestsListScreen extends StatefulWidget {
@@ -41,6 +42,18 @@ class _TestsListScreenState extends State<TestsListScreen> {
       appBar: AppBar(
         title: const Text('Список тестов'),
         centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.logout,
+              //color: Colors.white,
+            ),
+            onPressed: () {
+              AuthManager.setUserLoggedIn(false);
+              Navigator.pushReplacementNamed(context, '/registration');
+            },
+          )
+        ],
       ),
 
       body: ListView.separated(
