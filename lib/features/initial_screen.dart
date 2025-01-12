@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cognitive/features/registration/utils/auth_manager.dart';
+import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 
 class InitialScreen extends StatefulWidget {
   const InitialScreen({Key? key}) : super(key: key);
@@ -25,7 +25,7 @@ void _checkLoginStatus() {
       Navigator.pushReplacementNamed(context, '/testList');
     } else {
       debugPrint('Пользователь не авторизован, переход на /registration');
-      Navigator.pushReplacementNamed(context, '/registration');
+      Navigator.pushReplacementNamed(context, '/login');
     }
   });
 }

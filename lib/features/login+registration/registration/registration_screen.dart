@@ -1,6 +1,6 @@
-import 'package:cognitive/features/registration/utils/auth_manager.dart';
+import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:cognitive/features/registration/widgets/widgets.dart';
+import 'package:cognitive/features/login+registration/widgets/widgets.dart';
 import 'package:postgres/postgres.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -13,6 +13,7 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _repeatedPasswordController = TextEditingController();
 
   @override
   void dispose() {
@@ -24,9 +25,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   void _register() {
     final name = _nameController.text;
     final password = _passwordController.text;
+    final repeatedPassword = _repeatedPasswordController.text;
 
     // Добавить логику регистрации пользователя в будущем
-    debugPrint('Name: $name, Password: $password');
+    debugPrint('Name: $name, Password: $password, Repeated password: $repeatedPassword');
 
     AuthManager.setUserLoggedIn(true);
     final isLoggedIn = AuthManager.isUserLoggedIn();
@@ -76,14 +78,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CustomTextField(
-              hintText: 'Введите никнейм',
+              hintText: 'Придумайте никнейм',
               controller: _nameController,
             ),
             const SizedBox(height: 16.0),
             CustomTextField(
-              hintText: 'Введите пароль',
+              hintText: 'Придумайте пароль',
               isPassword: true,
               controller: _passwordController,
+            ),
+            const SizedBox(height: 16.0),
+            CustomTextField(
+              hintText: 'Повторите пароль',
+              isPassword: true,
+              controller: _repeatedPasswordController,
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(

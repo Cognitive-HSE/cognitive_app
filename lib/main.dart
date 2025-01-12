@@ -1,6 +1,6 @@
 
 import 'package:cognitive/cognitive_app.dart';
-import 'package:cognitive/features/registration/utils/auth_manager.dart';
+import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
 
 

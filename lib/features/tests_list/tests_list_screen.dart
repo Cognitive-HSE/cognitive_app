@@ -1,4 +1,4 @@
-import 'package:cognitive/features/registration/utils/auth_manager.dart';
+import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
 
 class TestsListScreen extends StatefulWidget {
@@ -50,7 +50,7 @@ class _TestsListScreenState extends State<TestsListScreen> {
             ),
             onPressed: () {
               AuthManager.setUserLoggedIn(false);
-              Navigator.pushReplacementNamed(context, '/registration');
+              Navigator.pushReplacementNamed(context, '/login');
             },
           )
         ],
