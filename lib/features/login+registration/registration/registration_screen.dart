@@ -22,26 +22,48 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     super.dispose();
   }
 
-  void _register() {
+  void showSnackBar(message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+      content: Text(message),
+      backgroundColor: Color.fromARGB(255, 227, 49, 37),
+      duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  Future<void> _register() async {
     final name = _nameController.text;
     final password = _passwordController.text;
     final repeatedPassword = _repeatedPasswordController.text;
 
-    // Добавить логику регистрации пользователя в будущем
-    debugPrint('Name: $name, Password: $password, Repeated password: $repeatedPassword');
+    if (name.isNotEmpty && password.isNotEmpty) {
+      if (password == repeatedPassword) {
+        if (await tryRegister(name, password)) {
+          AuthManager.setUserLoggedIn(true);
 
-    AuthManager.setUserLoggedIn(true);
-    final isLoggedIn = AuthManager.isUserLoggedIn();
-    debugPrint('Флаг isLoggedIn: $isLoggedIn');
+          debugPrint('Successful reg with Name: $name, Password: $password');
 
-    Navigator.of(context).pushNamed(
-      '/successReg',
-    );
+          Navigator.of(context).pushNamed(
+            '/successReg',
+          );
+        } else {
+          debugPrint("Не удалось зарегистрироваться");
+          showSnackBar("Не удалось зарегистрироваться");
+        }
+      } else {
+          debugPrint("Пароли не совпадают");
+          showSnackBar("Пароли не совпадают");
+      }
+    } else {
+        debugPrint("Заполнены не все поля");
+        showSnackBar("Заполнены не все поля");
+    }
   }
 
-  Future<void> operation() async {
+  Future<bool> tryRegister(login, password) async {
   try {
-    // Попытка подключения к базе данных
+    
     final conn = await Connection.open(
       Endpoint(
         host: '79.137.204.140',
@@ -53,19 +75,30 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       settings: ConnectionSettings(sslMode: SslMode.disable),
     );
 
-    // Если соединение установлено, выводим сообщение
-    debugPrint('Подключение к бд успешно!');
+    debugPrint('Подключение к бд из tryRegister успешно');
+
+    //request processing
+    final authorizeUser = await conn.execute(
+    Sql.named('SELECT cognitive."f\$users__register"(vp_username => @vp_username, vp_password_hash => @vp_password_hash)'),
+    parameters: {
+      'vp_username': '$login', 
+      'vp_password_hash': '$password'
+    },
+  );
+  final result = authorizeUser.first.first == null;
+  debugPrint('Result of reg: $result');
+
+  conn.close();
+  return result;
     
   } catch (e) {
-    // Обработка ошибок
-    debugPrint('Ошибка подключения к бд: $e');
+    debugPrint('Ошибка подключения к бд из tryRegister: $e');
+    return false;
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
-    // Подключаемся к бд
-    operation();
 
     return Scaffold(
       appBar: AppBar(

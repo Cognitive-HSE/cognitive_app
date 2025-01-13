@@ -22,29 +22,36 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void showSnackBar(message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+      content: Text(message),
+      backgroundColor: Color.fromARGB(255, 227, 49, 37),
+      duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
   Future<void> _login() async {
     final name = _nameController.text;
     final password = _passwordController.text;
 
-    if (await tryLogin(name, password)) {
-      AuthManager.setUserLoggedIn(true);
+    if (name.isNotEmpty && password.isNotEmpty) {
+      if (await tryLogin(name, password)) {
+        AuthManager.setUserLoggedIn(true);
 
-      debugPrint('Successful auth with Name: $name, Password: $password');
+        debugPrint('Successful auth with Name: $name, Password: $password');
 
-      Navigator.of(context).pushNamed(
-        '/successLogin',
-      );
+        Navigator.of(context).pushNamed(
+          '/successLogin',
+        );
+      } else {
+        debugPrint("Не удалось войти");
+        showSnackBar("Не удалось войти");
+      }
     } else {
-      debugPrint("Неправильный логин или пароль");
-
-      // Показываем SnackBar с сообщением об ошибке
-      ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Неправильный логин или пароль"),
-        backgroundColor: Color.fromARGB(255, 227, 49, 37),
-        duration: Duration(seconds: 2),
-      ),
-    );
+        debugPrint("Заполнены не все поля");
+        showSnackBar("Заполнены не все поля");
     }
   }
 
