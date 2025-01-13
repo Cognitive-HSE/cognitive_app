@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -22,27 +24,30 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _login() {
+  Future<void> _login() async {
     final name = _nameController.text;
     final password = _passwordController.text;
 
     // Добавить логику авторизации пользователя в будущем
-    debugPrint('Name: $name, Password: $password');
+    //debugPrint('Name: $name, Password: $password');
+    if (await tryAuthorize(name, password)) {
+      AuthManager.setUserLoggedIn(true);
+      final isLoggedIn = AuthManager.isUserLoggedIn();
+      debugPrint('Флаг isLoggedIn: $isLoggedIn');
 
-    AuthManager.setUserLoggedIn(true);
-    final isLoggedIn = AuthManager.isUserLoggedIn();
-    debugPrint('Флаг isLoggedIn: $isLoggedIn');
-
-    Navigator.of(context).pushNamed(
-      '/successLogin',
-    );
+      Navigator.of(context).pushNamed(
+        '/successLogin',
+      );
+    } else {
+      debugPrint("Неправильный логин или пароль");
+    }
   }
 
   void _goToRegisterScreen() {
     Navigator.of(context).pushNamed('/registration');
   }
 
-  Future<void> operation() async {
+  Future<bool> tryAuthorize(login, password) async {
   try {
     // Попытка подключения к базе данных
     final conn = await Connection.open(
@@ -57,18 +62,36 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     // Если соединение установлено, выводим сообщение
-    debugPrint('Подключение к бд успешно!');
+    debugPrint('Подключение к бд успешно)!');
+    final authorizeUser = await conn.execute(
+    Sql.named('SELECT cognitive."f\$users__auth"(vp_username => @vp_username, vp_password_hash => @vp_password_hash)'),
+    parameters: {
+      'vp_username': '$login', 
+      'vp_password_hash': '$password'
+    },
+  );
+  final result = authorizeUser.first.first == true;
+  debugPrint('AUTHORIZE OR NOT: $result');
+
+  conn.close();
+  return result;
     
   } catch (e) {
     // Обработка ошибок
     debugPrint('Ошибка подключения к бд: $e');
+    return false;
+    }
   }
-}
+  Future<void> _validateLogin(login, password) async {
+    if (await tryAuthorize(login, password)) {
+      _goToRegisterScreen;
+    } else {
+      debugPrint("Неверный логин или пароль");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Подключаемся к бд
-    operation();
 
     return Scaffold(
       appBar: AppBar(
@@ -108,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                     recognizer: TapGestureRecognizer()
-                      ..onTap = _goToRegisterScreen,
+                      ..onTap =_goToRegisterScreen,
                   ),
                 ],
               ),
