@@ -15,6 +15,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  bool isButtonDisabled = false;
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -33,6 +35,19 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login() async {
+
+        //block button
+    setState(() {
+      isButtonDisabled = true;
+    });
+
+    // Сброс блокировки кнопки через 3 секунды
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        isButtonDisabled = false;
+      });
+    });
+
     final name = _nameController.text;
     final password = _passwordController.text;
 
@@ -119,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: _login,
+              onPressed: isButtonDisabled ? null : _login,
               child: const Text('Войти!'),
             ),
             const SizedBox(height: 20.0),

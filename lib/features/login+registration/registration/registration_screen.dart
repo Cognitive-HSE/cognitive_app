@@ -15,6 +15,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repeatedPasswordController = TextEditingController();
 
+  bool isButtonDisabled = false;
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -33,6 +35,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   Future<void> _register() async {
+
+    //block button
+    setState(() {
+      isButtonDisabled = true;
+    });
+
+    // Сброс блокировки кнопки через 3 секунды
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        isButtonDisabled = false;
+      });
+    });
+
     final name = _nameController.text;
     final password = _passwordController.text;
     final repeatedPassword = _repeatedPasswordController.text;
@@ -128,7 +143,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: _register,
+              onPressed: isButtonDisabled ? null : _register,
               child: const Text('Зарегистрироваться!'),
             ),
           ],
