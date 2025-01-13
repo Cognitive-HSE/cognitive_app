@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -28,28 +26,31 @@ class _LoginScreenState extends State<LoginScreen> {
     final name = _nameController.text;
     final password = _passwordController.text;
 
-    // Добавить логику авторизации пользователя в будущем
-    //debugPrint('Name: $name, Password: $password');
-    if (await tryAuthorize(name, password)) {
+    if (await tryLogin(name, password)) {
       AuthManager.setUserLoggedIn(true);
-      final isLoggedIn = AuthManager.isUserLoggedIn();
-      debugPrint('Флаг isLoggedIn: $isLoggedIn');
+
+      debugPrint('Successful auth with Name: $name, Password: $password');
 
       Navigator.of(context).pushNamed(
         '/successLogin',
       );
     } else {
       debugPrint("Неправильный логин или пароль");
+
+      // Показываем SnackBar с сообщением об ошибке
+      ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Неправильный логин или пароль"),
+        backgroundColor: Color.fromARGB(255, 227, 49, 37),
+        duration: Duration(seconds: 2),
+      ),
+    );
     }
   }
 
-  void _goToRegisterScreen() {
-    Navigator.of(context).pushNamed('/registration');
-  }
-
-  Future<bool> tryAuthorize(login, password) async {
+  Future<bool> tryLogin(login, password) async {
   try {
-    // Попытка подключения к базе данных
+    
     final conn = await Connection.open(
       Endpoint(
         host: '79.137.204.140',
@@ -61,8 +62,9 @@ class _LoginScreenState extends State<LoginScreen> {
       settings: ConnectionSettings(sslMode: SslMode.disable),
     );
 
-    // Если соединение установлено, выводим сообщение
-    debugPrint('Подключение к бд успешно)!');
+    debugPrint('Подключение к бд из tryLogin успешно');
+
+    //request processing
     final authorizeUser = await conn.execute(
     Sql.named('SELECT cognitive."f\$users__auth"(vp_username => @vp_username, vp_password_hash => @vp_password_hash)'),
     parameters: {
@@ -71,23 +73,18 @@ class _LoginScreenState extends State<LoginScreen> {
     },
   );
   final result = authorizeUser.first.first == true;
-  debugPrint('AUTHORIZE OR NOT: $result');
 
   conn.close();
   return result;
     
   } catch (e) {
-    // Обработка ошибок
-    debugPrint('Ошибка подключения к бд: $e');
+    debugPrint('Ошибка подключения к бд из tryLogin: $e');
     return false;
     }
   }
-  Future<void> _validateLogin(login, password) async {
-    if (await tryAuthorize(login, password)) {
-      _goToRegisterScreen;
-    } else {
-      debugPrint("Неверный логин или пароль");
-    }
+
+  void _goToRegisterScreen() {
+    Navigator.of(context).pushNamed('/registration');
   }
 
   @override
@@ -104,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CustomTextField(
-              hintText: 'Введите никнейм',
+              hintText: 'Введите логин',
               controller: _nameController,
             ),
             const SizedBox(height: 16.0),
