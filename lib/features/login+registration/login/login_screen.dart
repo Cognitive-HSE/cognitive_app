@@ -1,7 +1,9 @@
+import 'package:bcrypt/bcrypt.dart';
 import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:cognitive/features/login+registration/widgets/widgets.dart';
+import 'package:flutter/services.dart';
 import 'package:postgres/postgres.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -36,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _login() async {
 
-        //block button
+    //block button
     setState(() {
       isButtonDisabled = true;
     });
@@ -57,9 +59,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
         debugPrint('Successful auth with Name: $name, Password: $password');
 
+        if (mounted) {
         Navigator.of(context).pushNamed(
           '/successLogin',
         );
+        }
+        
       } else {
         debugPrint("Не удалось войти");
         showSnackBar("Не удалось войти");
@@ -68,6 +73,14 @@ class _LoginScreenState extends State<LoginScreen> {
         debugPrint("Заполнены не все поля");
         showSnackBar("Заполнены не все поля");
     }
+  }
+
+  String hashPassword(password) {
+
+    final salt = r"$2a$10$qSMMbDD.1nFRJVUQxfi9ye";
+    final passwordHash = BCrypt.hashpw(password, salt);
+
+    return passwordHash;
   }
 
   Future<bool> tryLogin(login, password) async {
@@ -86,12 +99,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
     debugPrint('Подключение к бд из tryLogin успешно');
 
+    final passwordHash = hashPassword(password);
+
     //request processing
     final authorizeUser = await conn.execute(
     Sql.named('SELECT cognitive."f\$users__auth"(vp_username => @vp_username, vp_password_hash => @vp_password_hash)'),
     parameters: {
       'vp_username': '$login', 
-      'vp_password_hash': '$password'
+      'vp_password_hash': passwordHash
     },
   );
   final result = authorizeUser.first.first == true;
