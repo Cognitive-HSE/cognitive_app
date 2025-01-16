@@ -1,3 +1,4 @@
+import 'package:bcrypt/bcrypt.dart';
 import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:cognitive/features/login+registration/widgets/widgets.dart';
@@ -49,19 +50,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     });
 
     final name = _nameController.text;
-    final password = _passwordController.text;
-    final repeatedPassword = _repeatedPasswordController.text;
+    final passwordHash = hashPassword(_passwordController.text);
 
-    if (name.isNotEmpty && password.isNotEmpty) {
-      if (password == repeatedPassword) {
-        if (await tryRegister(name, password)) {
+    if (name.isNotEmpty && passwordHash.isNotEmpty) {
+      if (_passwordController.text == _repeatedPasswordController.text) {
+        if (await tryRegister(name, passwordHash)) {
           AuthManager.setUserLoggedIn(true);
 
-          debugPrint('Successful reg with Name: $name, Password: $password');
+          debugPrint('Successful reg with Name: $name, Password: $passwordHash');
 
-          Navigator.of(context).pushNamed(
-            '/successReg',
-          );
+        if (mounted) {
+        Navigator.of(context).pushNamed(
+          '/successReg',
+        );
+        }
+        
         } else {
           debugPrint("Не удалось зарегистрироваться");
           showSnackBar("Не удалось зарегистрироваться");
@@ -76,7 +79,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
   }
 
-  Future<bool> tryRegister(login, password) async {
+    String hashPassword(password) {
+
+    final salt = r"$2a$10$qSMMbDD.1nFRJVUQxfi9ye";
+    final passwordHash = BCrypt.hashpw(password, salt);
+
+    return passwordHash;
+  }
+
+  Future<bool> tryRegister(login, passwordHash) async {
   try {
     
     final conn = await Connection.open(
@@ -97,7 +108,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     Sql.named('SELECT cognitive."f\$users__register"(vp_username => @vp_username, vp_password_hash => @vp_password_hash)'),
     parameters: {
       'vp_username': '$login', 
-      'vp_password_hash': '$password'
+      'vp_password_hash': '$passwordHash'
     },
   );
   final result = authorizeUser.first.first == null;
