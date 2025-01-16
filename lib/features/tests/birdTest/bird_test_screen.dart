@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:postgres/postgres.dart';
 
 class BirdtestScreen extends StatefulWidget {
   const BirdtestScreen({super.key});
@@ -11,6 +13,9 @@ class BirdtestScreen extends StatefulWidget {
 }
 
 class _BirdtestScreenState extends State<BirdtestScreen> {
+
+  int testId = 2;
+
   Map birdDirections = {0: 'Up', 1: 'Right', 2: 'Down', 3: 'Left'};
   Map birdColors = {0: 'blue', 1: 'red'};
   Map birdLabels = {'blue': 'Куда летит ласточка?', 'red': 'Откуда летит ласточка?'};
@@ -23,7 +28,8 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
   var rightAnswers = 0;
   var heartsCount = 3;
 
-  int timerSeconds = 60; // test duration
+  int testDuration = 60; //test duration
+  int timerSeconds = 60; // seconds for remaining
   late Timer timer;
 
   Map<int, bool> buttonPressed = {0: false, 1: false, 2: false, 3: false};
@@ -81,6 +87,10 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
     if (allAnswers != 0) {
     accuracy = (rightAnswers/allAnswers * 100).round();
     } 
+
+    //результат в бд
+    resultsToDB();
+
     showDialog(
           context: context,
           barrierDismissible: false,
@@ -140,6 +150,70 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
 
   String getBirdStrDirection() {
     return birdDirections[birdDirection];
+  }
+
+  String formatToInterval(int secs) {
+  int hours = secs ~/ 3600; // Часы
+  int minutes = (secs % 3600) ~/ 60; // Минуты
+  int seconds = secs % 60; // Секунды
+
+  // Форматируем с ведущими нулями
+  String hoursStr = hours.toString().padLeft(2, '0');
+  String minutesStr = minutes.toString().padLeft(2, '0');
+  String secondsStr = seconds.toString().padLeft(2, '0');
+
+  return '$hoursStr:$minutesStr:$secondsStr';
+}
+
+  Future<bool> resultsToDB() async {
+  try {
+    
+    final conn = await Connection.open(
+      Endpoint(
+        host: '79.137.204.140',
+        port: 5000,
+        database: 'cognitive_dev',
+        username: 'cognitive_developer',
+        password: 'cognitive_developer',
+      ),
+      settings: ConnectionSettings(sslMode: SslMode.disable),
+    );
+
+    debugPrint('Подключение к бд из resultsToDB успешно');
+
+    final secodsInterval = formatToInterval(testDuration - timerSeconds);
+    final userName = AuthManager.getUsername();
+
+    //request processing
+    final sendResults = await conn.execute(
+    Sql.named('''
+    SELECT cognitive."f\$test_results__write2"(
+    vp_user_name => @vp_user_name, 
+    vp_test_id => @vp_test_id,
+    vp_number_all_answers => @vp_number_all_answers,
+    vp_number_correct_answers => @vp_number_correct_answers,
+    vp_complete_time => @vp_complete_time
+    )'''
+    ),
+    parameters: {
+      'vp_user_name': userName, 
+      'vp_test_id': testId,
+      'vp_number_all_answers': allAnswers,
+      'vp_number_correct_answers': rightAnswers,
+      'vp_complete_time': secodsInterval,
+      
+    },
+  );
+  debugPrint('$sendResults');
+  final result = sendResults.isEmpty == true;
+
+  conn.close();
+  return result;
+    
+  } catch (e) {
+    debugPrint('Ошибка подключения к бд из resultsToDB: $e');
+    return false;
+    }
   }
 
   @override
@@ -295,7 +369,7 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
           ),
 
           // Кнопки-стрелки фиксируются в нижней части экрана
-                    Positioned(
+          Positioned(
             bottom: 20,
             left: 0,
             right: 0,
