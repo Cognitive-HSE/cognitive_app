@@ -17,5 +17,16 @@ class AuthManager {
 
   static void logout() {
     _storage.remove('isLoggedIn');
+    _storage.remove('username');
+  }
+
+    // Сохранение имени пользователя
+  static Future<void> setUsername(String username) async {
+    await _storage.write('username', username);
+  }
+
+  // Получение имени пользователя
+  static String? getUsername() {
+    return _storage.read('username');
   }
 }
