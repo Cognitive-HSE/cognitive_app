@@ -56,6 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (name.isNotEmpty && password.isNotEmpty) {
       if (await tryLogin(name, password)) {
         AuthManager.setUserLoggedIn(true);
+        AuthManager.setUsername(name);
 
         debugPrint('Successful auth with Name: $name, Password: $password');
 
@@ -64,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
           '/successLogin',
         );
         }
-        
+
       } else {
         debugPrint("Не удалось войти");
         showSnackBar("Не удалось войти");

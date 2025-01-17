@@ -1,6 +1,9 @@
+import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
+
+import 'package:postgres/postgres.dart';
 
 class MunstTestScreen extends StatefulWidget {
   const MunstTestScreen({super.key});
@@ -11,6 +14,7 @@ class MunstTestScreen extends StatefulWidget {
 
 class _MunstTestScreenState extends State<MunstTestScreen> {
   // Символы и выделенные индексы
+  final testId = 1;
   final _formKey = GlobalKey<FormState>();
   List<String> characters = [];
   List<int> selectedIndexes = [];
@@ -42,10 +46,69 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
     'УЛИТКА',
     'ХЛЕБ',
     'ЦАРЬ',
-    'ЦЕВЬЕ'
+    'ЦЕВЬЕ',
+    'ХАМАМ',
+    'ПЛАТЬЕ',
+    'ПОЛОТЕНЦЕ',
+    'СОЛНЦЕ',
+    'ОДЕЯЛО',
+    'ОБУВЬ',
+    'ПОДОШВА',
+    'ОДЕЖДА',
+    'ЗАЯЦ',
+    'СИРЕНЬ',
+    'СТАНЦИЯ',
+    'БЕГЛЕЦ',
+    'АЗАРТ',
+    'БОРОДА',
+    'ЧУЧЕЛО',
+    'БОГАТСТВО',
+    'ОДЕКОЛОН',
+    'БАЗАР',
+    'РАССУДОК',
+    'ГРЯЗЬ',
+    'ОБЛАКО',
+    'ЗАГАДКА',
+    'ЗАДАЧА',
+    'ЦЕЛЬ',
+    'ПУТЬ',
+    'СОЗВЕЗДИЕ',
+    'ОБЛИК',
+    'ЗНАК',
+    'КОНФИГУРАЦИЯ',
+    'ПУСТОТА',
+    'ЗАМКНУТОСТЬ',
+    'СИНГУЛЯРНОСТЬ',
+    'ОБРЫВ',
+    'ОГРАНИЧЕНИЕ',
+    'УГРОЗА',
+    'ОБЩЕСТВО',
+    'РИНГ',
+    'КЛУБ',
+    'БОЕЦ',
+    'КАРАТЭ',
+    'ОБЕЗЬЯНА',
+    'СОВЕСТЬ',
+    'СЛОВО',
+    'ЧЕСТЬ',
+    'ВРЕМЯ',
+    'СКОРОСТЬ',
+    'МАНЕВР',
+    'ОБГОН',
+    'ПОВОРОТ',
+    'ПРИБЫЛЬ',
+    'УБЫТОК',
+    'НЕДОСТАЧА',
+    'УЧЕТ',
+    'ЗАМЕТКА',
+    'ПОЛОСТЬ',
+    'ДЫРА',
+    'БОБЕР',
+    'СОВА'
   ]; // Список слов, которые нужно найти
   List<String> wordsToFind = [];
   int seconds = 0;
+  int foundWords = 0;
   late Timer timer;
 
   @override
@@ -73,7 +136,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
 
 //сколько выделено слов
   void _checkWords() {
-    int foundWords = 0;
+    // int foundWords = 0;
     for (int i = 0; i < characters.length; ++i) {
       if (selectedIndexes.contains(i)) {
         if (List.generate(wordsToFind.length, (int k) => wordsToFind[k][0])
@@ -94,6 +157,10 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
         }
       }
     }
+
+    //результаты теста в бд
+    resultsToDB();
+
     timer.cancel(); // stop timer when results shown
     showDialog(
       context: context,
@@ -112,12 +179,63 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
     );
   }
 
+  Future<bool> resultsToDB() async {
+  try {
+    
+    final conn = await Connection.open(
+      Endpoint(
+        host: '79.137.204.140',
+        port: 5000,
+        database: 'cognitive_dev',
+        username: 'cognitive_developer',
+        password: 'cognitive_developer',
+      ),
+      settings: ConnectionSettings(sslMode: SslMode.disable),
+    );
+
+    debugPrint('Подключение к бд из resultsToDB успешно');
+
+    final secodsInterval = formatToInterval(seconds);
+    final userName = AuthManager.getUsername();
+
+    //request processing
+    final sendResults = await conn.execute(
+    Sql.named('''
+    SELECT cognitive."f\$test_results__write2"(
+    vp_user_name => @vp_user_name, 
+    vp_test_id => @vp_test_id,
+    vp_number_all_answers => @vp_number_all_answers,
+    vp_number_correct_answers => @vp_number_correct_answers,
+    vp_complete_time => @vp_complete_time
+    )'''
+    ),
+    parameters: {
+      'vp_user_name': '$userName', 
+      'vp_test_id': testId,
+      'vp_number_all_answers': wordsToFind.length,
+      'vp_number_correct_answers': foundWords,
+      'vp_complete_time': secodsInterval,
+      
+    },
+  );
+  debugPrint('$sendResults');
+  final result = sendResults.isEmpty == true;
+
+  conn.close();
+  return result;
+    
+  } catch (e) {
+    debugPrint('Ошибка подключения к бд из resultsToDB: $e');
+    return false;
+    }
+  }
+
 //генерация случайного ряда русских букв
   void _generateCharacters(int numberOfChar) {
     int i = 0;
     var randomCharacter = Random();
     wordsToFind = List.generate(
-        8, (int k) => dictionary[Random(k).nextInt(dictionary.length)]);
+        8, (int k) => dictionary[Random().nextInt(dictionary.length)]);
     var indices = List.generate(wordsToFind.length,
         (int k) => randomCharacter.nextInt(199 - wordsToFind[i].length));
     characters = List.generate(numberOfChar, (index) {
@@ -132,6 +250,19 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
     }).expand((s) => s.split("")).toList();
     setState(() {});
   }
+
+  String formatToInterval(int secs) {
+  int hours = secs ~/ 3600; // Часы
+  int minutes = (secs % 3600) ~/ 60; // Минуты
+  int seconds = secs % 60; // Секунды
+
+  // Форматируем с ведущими нулями
+  String hoursStr = hours.toString().padLeft(2, '0');
+  String minutesStr = minutes.toString().padLeft(2, '0');
+  String secondsStr = seconds.toString().padLeft(2, '0');
+
+  return '$hoursStr:$minutesStr:$secondsStr';
+}
 
   @override
   void dispose() {
