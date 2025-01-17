@@ -8,9 +8,7 @@ class NumberTestDescriptionScreen extends StatefulWidget {
 }
 
 class _NumberTestDescriptionScreenState extends State<NumberTestDescriptionScreen> {
-
-  int testIndex = 0;
-
+  
   @override
   void dispose() {
     super.dispose();
