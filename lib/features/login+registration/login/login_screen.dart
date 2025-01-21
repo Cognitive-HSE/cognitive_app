@@ -53,27 +53,31 @@ class _LoginScreenState extends State<LoginScreen> {
     final name = _nameController.text;
     final password = _passwordController.text;
 
-    if (name.isNotEmpty && password.isNotEmpty) {
-      if (await tryLogin(name, password)) {
-        AuthManager.setUserLoggedIn(true);
-        AuthManager.setUsername(name);
+    Navigator.of(context).pushNamed(
+      '/successLogin',
+    );
 
-        debugPrint('Successful auth with Name: $name, Password: $password');
+    // if (name.isNotEmpty && password.isNotEmpty) {
+    //   if (await tryLogin(name, password)) {
+    //     AuthManager.setUserLoggedIn(true);
+    //     AuthManager.setUsername(name);
 
-        if (mounted) {
-        Navigator.of(context).pushNamed(
-          '/successLogin',
-        );
-        }
+    //     debugPrint('Successful auth with Name: $name, Password: $password');
 
-      } else {
-        debugPrint("Не удалось войти");
-        showSnackBar("Не удалось войти");
-      }
-    } else {
-        debugPrint("Заполнены не все поля");
-        showSnackBar("Заполнены не все поля");
-    }
+    //     if (mounted) {
+    //     Navigator.of(context).pushNamed(
+    //       '/successLogin',
+    //     );
+    //     }
+
+    //   } else {
+    //     debugPrint("Не удалось войти");
+    //     showSnackBar("Не удалось войти");
+    //   }
+    // } else {
+    //     debugPrint("Заполнены не все поля");
+    //     showSnackBar("Заполнены не все поля");
+    // }
   }
 
   String hashPassword(password) {
@@ -84,42 +88,42 @@ class _LoginScreenState extends State<LoginScreen> {
     return passwordHash;
   }
 
-  Future<bool> tryLogin(login, password) async {
-  try {
+  // Future<bool> tryLogin(login, password) async {
+  // try {
     
-    final conn = await Connection.open(
-      Endpoint(
-        host: '79.137.204.140',
-        port: 5000,
-        database: 'cognitive_dev',
-        username: 'cognitive_developer',
-        password: 'cognitive_developer',
-      ),
-      settings: ConnectionSettings(sslMode: SslMode.disable),
-    );
+  //   final conn = await Connection.open(
+  //     Endpoint(
+  //       host: '79.137.204.140',
+  //       port: 5000,
+  //       database: 'cognitive_dev',
+  //       username: 'cognitive_developer',
+  //       password: 'cognitive_developer',
+  //     ),
+  //     settings: ConnectionSettings(sslMode: SslMode.disable),
+  //   );
 
-    debugPrint('Подключение к бд из tryLogin успешно');
+  //   debugPrint('Подключение к бд из tryLogin успешно');
 
-    final passwordHash = hashPassword(password);
+  //   final passwordHash = hashPassword(password);
 
-    //request processing
-    final authorizeUser = await conn.execute(
-    Sql.named('SELECT cognitive."f\$users__auth"(vp_username => @vp_username, vp_password_hash => @vp_password_hash)'),
-    parameters: {
-      'vp_username': '$login', 
-      'vp_password_hash': passwordHash
-    },
-  );
-  final result = authorizeUser.first.first == true;
+  //   //request processing
+  //   final authorizeUser = await conn.execute(
+  //   Sql.named('SELECT cognitive."f\$users__auth"(vp_username => @vp_username, vp_password_hash => @vp_password_hash)'),
+  //   parameters: {
+  //     'vp_username': '$login', 
+  //     'vp_password_hash': passwordHash
+  //   },
+  // );
+  // final result = authorizeUser.first.first == true;
 
-  conn.close();
-  return result;
+  // conn.close();
+  // return result;
     
-  } catch (e) {
-    debugPrint('Ошибка подключения к бд из tryLogin: $e');
-    return false;
-    }
-  }
+  // } catch (e) {
+  //   debugPrint('Ошибка подключения к бд из tryLogin: $e');
+  //   return false;
+  //   }
+  // }
 
   void _goToRegisterScreen() {
     Navigator.of(context).pushNamed('/registration');

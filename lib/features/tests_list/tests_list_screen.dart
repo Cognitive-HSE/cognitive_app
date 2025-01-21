@@ -61,7 +61,7 @@ class _TestsListScreenState extends State<TestsListScreen> {
               //color: Colors.white,
             ),
             onPressed: () {
-              AuthManager.setUserLoggedIn(false);
+              //AuthManager.setUserLoggedIn(false);
               Navigator.pushReplacementNamed(context, '/login');
             },
           )

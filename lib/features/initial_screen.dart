@@ -12,23 +12,26 @@ class _InitialScreenState extends State<InitialScreen> {
   @override
   void initState() {
     super.initState();
-    _checkLoginStatus();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.pushReplacementNamed(context, '/login');
+    });
+    //_checkLoginStatus();
   }
 
-void _checkLoginStatus() {
-  WidgetsBinding.instance.addPostFrameCallback((_) async {
-    final isLoggedIn = AuthManager.isUserLoggedIn();
-    debugPrint('isLoggedIn в InitialScreen: $isLoggedIn');
+// void _checkLoginStatus() {
+//   WidgetsBinding.instance.addPostFrameCallback((_) async {
+//     final isLoggedIn = AuthManager.isUserLoggedIn();
+//     debugPrint('isLoggedIn в InitialScreen: $isLoggedIn');
     
-    if (isLoggedIn) {
-      debugPrint('Пользователь авторизован, переход на /testList');
-      Navigator.pushReplacementNamed(context, '/testList');
-    } else {
-      debugPrint('Пользователь не авторизован, переход на /registration');
-      Navigator.pushReplacementNamed(context, '/login');
-    }
-  });
-}
+//     if (isLoggedIn) {
+//       debugPrint('Пользователь авторизован, переход на /testList');
+//       Navigator.pushReplacementNamed(context, '/testList');
+//     } else {
+//       debugPrint('Пользователь не авторизован, переход на /registration');
+//       Navigator.pushReplacementNamed(context, '/login');
+//     }
+//   });
+// }
 
   @override
   Widget build(BuildContext context) {

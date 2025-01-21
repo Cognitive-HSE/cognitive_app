@@ -78,7 +78,7 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
 
     debugPrint('Подключение к бд из resultsToDB успешно');
 
-    final userName = AuthManager.getUsername();
+    //final userName = AuthManager.getUsername();
 
     //request processing
     final sendResults = await conn.execute(
@@ -92,7 +92,7 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
     )'''
     ),
     parameters: {
-      'vp_user_name': '$userName', 
+      //'vp_user_name': '$userName', 
       'vp_test_id': testId,
       'vp_number_all_answers': finishNumberCount - startNumberCount + 1,
       'vp_number_correct_answers': rightAnswers,
@@ -121,7 +121,7 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
         actions: [
           TextButton(
               onPressed: () {
-                resultsToDB();
+                //resultsToDB();
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/testList', (route) => false);
               },

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await AuthManager.init(); // Инициализация GetStorage
+  //WidgetsFlutterBinding.ensureInitialized();
+  //await AuthManager.init(); // Инициализация GetStorage
   runApp(const CognitiveApp());
 }
 

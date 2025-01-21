@@ -52,31 +52,35 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     final name = _nameController.text;
     final passwordHash = hashPassword(_passwordController.text);
 
-    if (name.isNotEmpty && passwordHash.isNotEmpty) {
-      if (_passwordController.text == _repeatedPasswordController.text) {
-        if (await tryRegister(name, passwordHash)) {
-          AuthManager.setUserLoggedIn(true);
+    Navigator.of(context).pushNamed(
+      '/successReg',
+    );
 
-          debugPrint('Successful reg with Name: $name, Password: $passwordHash');
+    // if (name.isNotEmpty && passwordHash.isNotEmpty) {
+    //   if (_passwordController.text == _repeatedPasswordController.text) {
+    //     if (await tryRegister(name, passwordHash)) {
+    //       AuthManager.setUserLoggedIn(true);
 
-        if (mounted) {
-        Navigator.of(context).pushNamed(
-          '/successReg',
-        );
-        }
+    //       debugPrint('Successful reg with Name: $name, Password: $passwordHash');
+
+    //     if (mounted) {
+    //     Navigator.of(context).pushNamed(
+    //       '/successReg',
+    //     );
+    //     }
         
-        } else {
-          debugPrint("Не удалось зарегистрироваться");
-          showSnackBar("Не удалось зарегистрироваться");
-        }
-      } else {
-          debugPrint("Пароли не совпадают");
-          showSnackBar("Пароли не совпадают");
-      }
-    } else {
-        debugPrint("Заполнены не все поля");
-        showSnackBar("Заполнены не все поля");
-    }
+    //     } else {
+    //       debugPrint("Не удалось зарегистрироваться");
+    //       showSnackBar("Не удалось зарегистрироваться");
+    //     }
+    //   } else {
+    //       debugPrint("Пароли не совпадают");
+    //       showSnackBar("Пароли не совпадают");
+    //   }
+    // } else {
+    //     debugPrint("Заполнены не все поля");
+    //     showSnackBar("Заполнены не все поля");
+    // }
   }
 
     String hashPassword(password) {
@@ -87,41 +91,41 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     return passwordHash;
   }
 
-  Future<bool> tryRegister(login, passwordHash) async {
-  try {
+  // Future<bool> tryRegister(login, passwordHash) async {
+  // try {
     
-    final conn = await Connection.open(
-      Endpoint(
-        host: '79.137.204.140',
-        port: 5000,
-        database: 'cognitive_dev',
-        username: 'cognitive_developer',
-        password: 'cognitive_developer',
-      ),
-      settings: ConnectionSettings(sslMode: SslMode.disable),
-    );
+  //   final conn = await Connection.open(
+  //     Endpoint(
+  //       host: '79.137.204.140',
+  //       port: 5000,
+  //       database: 'cognitive_dev',
+  //       username: 'cognitive_developer',
+  //       password: 'cognitive_developer',
+  //     ),
+  //     settings: ConnectionSettings(sslMode: SslMode.disable),
+  //   );
 
-    debugPrint('Подключение к бд из tryRegister успешно');
+  //   debugPrint('Подключение к бд из tryRegister успешно');
 
-    //request processing
-    final authorizeUser = await conn.execute(
-    Sql.named('SELECT cognitive."f\$users__register"(vp_username => @vp_username, vp_password_hash => @vp_password_hash)'),
-    parameters: {
-      'vp_username': '$login', 
-      'vp_password_hash': '$passwordHash'
-    },
-  );
-  final result = authorizeUser.first.first == null;
-  debugPrint('Result of reg: $result');
+  //   //request processing
+  //   final authorizeUser = await conn.execute(
+  //   Sql.named('SELECT cognitive."f\$users__register"(vp_username => @vp_username, vp_password_hash => @vp_password_hash)'),
+  //   parameters: {
+  //     'vp_username': '$login', 
+  //     'vp_password_hash': '$passwordHash'
+  //   },
+  // );
+  // final result = authorizeUser.first.first == null;
+  // debugPrint('Result of reg: $result');
 
-  conn.close();
-  return result;
+  // conn.close();
+  // return result;
     
-  } catch (e) {
-    debugPrint('Ошибка подключения к бд из tryRegister: $e');
-    return false;
-    }
-  }
+  // } catch (e) {
+  //   debugPrint('Ошибка подключения к бд из tryRegister: $e');
+  //   return false;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

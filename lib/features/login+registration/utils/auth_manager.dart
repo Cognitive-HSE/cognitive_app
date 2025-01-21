@@ -3,9 +3,9 @@ import 'package:get_storage/get_storage.dart';
 class AuthManager {
   static final _storage = GetStorage();
 
-  static Future<void> init() async {
-    await GetStorage.init();
-  }
+  // static Future<void> init() async {
+  //   await GetStorage.init();
+  // }
 
   static bool isUserLoggedIn() {
     return _storage.read('isLoggedIn') ?? false;

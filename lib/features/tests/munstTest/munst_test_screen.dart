@@ -159,7 +159,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
     }
 
     //результаты теста в бд
-    resultsToDB();
+    //resultsToDB();
 
     timer.cancel(); // stop timer when results shown
     showDialog(
@@ -196,7 +196,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
     debugPrint('Подключение к бд из resultsToDB успешно');
 
     final secodsInterval = formatToInterval(seconds);
-    final userName = AuthManager.getUsername();
+    //final userName = AuthManager.getUsername();
 
     //request processing
     final sendResults = await conn.execute(
@@ -210,7 +210,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
     )'''
     ),
     parameters: {
-      'vp_user_name': '$userName', 
+      //'vp_user_name': '$userName', 
       'vp_test_id': testId,
       'vp_number_all_answers': wordsToFind.length,
       'vp_number_correct_answers': foundWords,

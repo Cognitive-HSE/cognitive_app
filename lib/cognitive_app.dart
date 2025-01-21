@@ -10,6 +10,7 @@ class CognitiveApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       //title: 'Registration',
+      initialRoute: '/login',
       theme: theme,
       routes: routes,
     );

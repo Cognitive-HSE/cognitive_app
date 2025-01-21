@@ -89,7 +89,7 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
     } 
 
     //результат в бд
-    resultsToDB();
+    //resultsToDB();
 
     showDialog(
           context: context,
@@ -182,7 +182,7 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
     debugPrint('Подключение к бд из resultsToDB успешно');
 
     final secodsInterval = formatToInterval(testDuration - timerSeconds);
-    final userName = AuthManager.getUsername();
+    //final userName = AuthManager.getUsername();
 
     //request processing
     final sendResults = await conn.execute(
@@ -196,7 +196,7 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
     )'''
     ),
     parameters: {
-      'vp_user_name': userName, 
+      //'vp_user_name': userName, 
       'vp_test_id': testId,
       'vp_number_all_answers': allAnswers,
       'vp_number_correct_answers': rightAnswers,
