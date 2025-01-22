@@ -394,8 +394,13 @@ class _TagTestScreenState extends State<TagTestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text(
+          'Тест Пятнашки',
+          style: TextStyle(color: Colors.white), // Белый цвет текста
+        ),
+        backgroundColor: Color(0xFF373737), 
         centerTitle: true,
-        title: const Text('Пятнашки'),
+        
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

@@ -100,6 +100,14 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
               ),
             actions: [
               TextButton(
+                style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[700], // Цвет кнопки
+                        foregroundColor: Colors.white, // Цвет текста кнопки
+                        minimumSize: const Size(200, 50), // Размер кнопки
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10), // Скругленные углы
+                        ),
+                      ),
                   onPressed: () {
                      Navigator.pushNamedAndRemoveUntil(
                       context,

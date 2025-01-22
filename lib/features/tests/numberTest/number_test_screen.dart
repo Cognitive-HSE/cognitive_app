@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:postgres/postgres.dart';
 
@@ -63,69 +62,71 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
   }
 
   Future<bool> resultsToDB() async {
-  try {
-    
-    final conn = await Connection.open(
-      Endpoint(
-        host: '79.137.204.140',
-        port: 5000,
-        database: 'cognitive_dev',
-        username: 'cognitive_developer',
-        password: 'cognitive_developer',
-      ),
-      settings: ConnectionSettings(sslMode: SslMode.disable),
-    );
+    try {
+      final conn = await Connection.open(
+        Endpoint(
+          host: '79.137.204.140',
+          port: 5000,
+          database: 'cognitive_dev',
+          username: 'cognitive_developer',
+          password: 'cognitive_developer',
+        ),
+        settings: ConnectionSettings(sslMode: SslMode.disable),
+      );
 
-    debugPrint('Подключение к бд из resultsToDB успешно');
+      debugPrint('Подключение к бд из resultsToDB успешно');
 
-    //final userName = AuthManager.getUsername();
+      final sendResults = await conn.execute(
+        Sql.named('''
+        SELECT cognitive."f\$test_results__write2"(
+        vp_user_name => @vp_user_name, 
+        vp_test_id => @vp_test_id,
+        vp_number_all_answers => @vp_number_all_answers,
+        vp_number_correct_answers => @vp_number_correct_answers,
+        vp_complete_time => @vp_complete_time
+        )'''
+        ),
+        parameters: {
+          'vp_test_id': testId,
+          'vp_number_all_answers': finishNumberCount - startNumberCount + 1,
+          'vp_number_correct_answers': rightAnswers,
+          'vp_complete_time': null,
+        },
+      );
+      debugPrint('$sendResults');
+      final result = sendResults.isEmpty == true;
 
-    //request processing
-    final sendResults = await conn.execute(
-    Sql.named('''
-    SELECT cognitive."f\$test_results__write2"(
-    vp_user_name => @vp_user_name, 
-    vp_test_id => @vp_test_id,
-    vp_number_all_answers => @vp_number_all_answers,
-    vp_number_correct_answers => @vp_number_correct_answers,
-    vp_complete_time => @vp_complete_time
-    )'''
-    ),
-    parameters: {
-      //'vp_user_name': '$userName', 
-      'vp_test_id': testId,
-      'vp_number_all_answers': finishNumberCount - startNumberCount + 1,
-      'vp_number_correct_answers': rightAnswers,
-      'vp_complete_time': null
-      
-    },
-  );
-  debugPrint('$sendResults');
-  final result = sendResults.isEmpty == true;
-
-  conn.close();
-  return result;
-    
-  } catch (e) {
-    debugPrint('Ошибка подключения к бд из resultsToDB: $e');
-    return false;
+      conn.close();
+      return result;
+    } catch (e) {
+      debugPrint('Ошибка подключения к бд из resultsToDB: $e');
+      return false;
     }
   }
 
-  void finishTestMessage(foundWords, ) {
-      showDialog(
+  void finishTestMessage() {
+    showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
         content: Text("Количество правильных ответов: $rightAnswers"),
         actions: [
           TextButton(
-              onPressed: () {
-                //resultsToDB();
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/testList', (route) => false);
-              },
-              child: const Text('Вернуться к тестам'))
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey[700],
+              foregroundColor: Colors.white,
+              minimumSize: const Size(200, 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () {
+              //resultsToDB();
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/testList', (route) => false);
+            },
+            child: const Text('Вернуться к тестам')
+          )
         ],
       ),
     );
@@ -137,7 +138,12 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('Тест на запоминание чисел')),
+        title: const Text(
+          'Тест на запоминание чисел',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Color(0xFF373737),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -145,10 +151,9 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Центрирование чисел
               if (showNumbers)
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.7, // Центрируем по высоте
+                  height: MediaQuery.of(context).size.height * 0.7,
                   child: Center(
                     child: Text(
                       numbersToRemember.join(', '),
@@ -170,7 +175,17 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
                             keyboardType: TextInputType.number,
                             onChanged: (value) {
                               if (value.isNotEmpty) {
-                                userInput[index] = int.parse(value);
+                                try {
+                                  userInput[index] = int.parse(value);
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Пожалуйста, введите только цифры.'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                  userInput[index] = 0; // Сбрасываем некорректный ввод
+                                }
                               }
                             },
                             decoration: InputDecoration(labelText: 'Число ${index + 1}'),
@@ -180,6 +195,14 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[700],
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(200, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
                       onPressed: checkAnswer,
                       child: Text('Проверить'),
                     ),
@@ -187,73 +210,84 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
                 ),
               if (testCompleted)
                 Column(
-  mainAxisAlignment: MainAxisAlignment.center,
-  crossAxisAlignment: CrossAxisAlignment.center,
-  children: [
-    Text(
-      'Результаты:',
-      style: TextStyle(fontSize: screenWidth * 0.06),
-      textAlign: TextAlign.center,
-    ),
-    SizedBox(height: 20),
-    Text(
-      'Ваш ответ:',
-      style: TextStyle(fontSize: screenWidth * 0.06),
-      textAlign: TextAlign.center,
-    ),
-    Text(
-      userInput.toString(),
-      style: TextStyle(fontSize: screenWidth * 0.08),
-      textAlign: TextAlign.center,
-    ),
-    SizedBox(height: 10),
-    Text(
-      'Правильный ответ:',
-      style: TextStyle(fontSize: screenWidth * 0.06),
-      textAlign: TextAlign.center,
-    ),
-    Text(
-      numbersToRemember.toString(),
-      style: TextStyle(fontSize: screenWidth * 0.08),
-      textAlign: TextAlign.center,
-    ),
-    SizedBox(height: 20),
-    Text(
-      userInput.toString() == numbersToRemember.toString()
-          ? 'Правильно!'
-          : 'Неправильно!',
-      style: TextStyle(
-        fontSize: screenWidth * 0.06,
-        color: userInput.toString() == numbersToRemember.toString()
-            ? Colors.green
-            : Colors.red,
-      ),
-      textAlign: TextAlign.center,
-    ),
-    SizedBox(height: 30),
-    if (startNumberCount < finishNumberCount)
-      Center(
-        child: ElevatedButton(
-          onPressed: goToNextTest,
-          child: Text('Следующий этап', textAlign: TextAlign.center),
-        ),
-      ),
-    SizedBox(height: 10),
-    if (startNumberCount == finishNumberCount)
-    
-      Center(
-        child: ElevatedButton(
-          onPressed: () {
-            
-            finishTestMessage(rightAnswers);
-          
-          },
-          child: Text('Вернуться к тестам', textAlign: TextAlign.center),
-        ),
-      ),
-  ],
-),
-
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 200),
+                    Text(
+                      'Результаты:',
+                      style: TextStyle(fontSize: screenWidth * 0.06),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'Ваш ответ:',
+                      style: TextStyle(fontSize: screenWidth * 0.06),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      userInput.toString(),
+                      style: TextStyle(fontSize: screenWidth * 0.08),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Правильный ответ:',
+                      style: TextStyle(fontSize: screenWidth * 0.06),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      numbersToRemember.toString(),
+                      style: TextStyle(fontSize: screenWidth * 0.08),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      userInput.toString() == numbersToRemember.toString()
+                          ? 'Правильно!'
+                          : 'Неправильно!',
+                      style: TextStyle(
+                        fontSize: screenWidth * 0.06,
+                        color: userInput.toString() == numbersToRemember.toString()
+                            ? Colors.green
+                            : Colors.red,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 30),
+                    if (startNumberCount < finishNumberCount)
+                      Center(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[700],
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(200, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: goToNextTest,
+                          child: Text('Следующий этап', textAlign: TextAlign.center),
+                        ),
+                      ),
+                    SizedBox(height: 10),
+                    if (startNumberCount == finishNumberCount)
+                      Center(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[700],
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(200, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: finishTestMessage,
+                          child: Text('Вернуться к тестам', textAlign: TextAlign.center),
+                        ),
+                      ),
+                  ],
+                ),
             ],
           ),
         ),
