@@ -10,6 +10,8 @@ import 'package:cognitive/features/tests/numberTest/number_test_description_scre
 import 'package:cognitive/features/tests/numberTest/number_test_screen.dart';
 import 'package:cognitive/features/tests/test/tag_test_screen.dart';
 import 'package:cognitive/features/tests/test/tag_test_description_screen.dart';
+import 'package:cognitive/features/tests/strupTest/strup_test_screen.dart';
+import 'package:cognitive/features/tests/strupTest/strup_test_description_screen.dart';
 import 'package:cognitive/features/tests_list/tests_list_screen.dart';
 import '../features/login+registration/registration/success_reg_screen.dart';
 
@@ -28,4 +30,6 @@ final routes = {
         '/numberTest': (context) => NumberTestScreen(),
         '/testList/tagTestDescription': (context) => TagTestDescriptionScreen(),
         '/tagTest': (context) => TagTestScreen(),
+        '/testList/strupTestDescription': (context) => const StrupTestDescriptionScreen(),
+        '/strupTest': (context) => StrupTestScreen(),
       };
