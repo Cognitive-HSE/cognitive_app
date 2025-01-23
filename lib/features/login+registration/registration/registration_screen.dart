@@ -54,9 +54,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
     if (name.isNotEmpty && passwordHash.isNotEmpty) {
       if (_passwordController.text == _repeatedPasswordController.text) {
-        if (await tryRegister(name, passwordHash)) {
+        final userIdIfRegister = await tryRegister(name, passwordHash);
+        if (userIdIfRegister is int) {
           AuthManager.setUserLoggedIn(true);
-
+          AuthManager.setUsername(name);
+          AuthManager.setUserId(userIdIfRegister);
+          
           debugPrint('Successful reg with Name: $name, Password: $passwordHash');
 
         if (mounted) {
@@ -87,7 +90,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     return passwordHash;
   }
 
-  Future<bool> tryRegister(login, passwordHash) async {
+  Future<int?> tryRegister(login, passwordHash) async {
   try {
     
     final conn = await Connection.open(
@@ -104,22 +107,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     debugPrint('Подключение к бд из tryRegister успешно');
 
     //request processing
-    final authorizeUser = await conn.execute(
+    final registerUser = await conn.execute(
     Sql.named('SELECT cognitive."f\$users__register"(vp_username => @vp_username, vp_password_hash => @vp_password_hash)'),
     parameters: {
       'vp_username': '$login', 
-      'vp_password_hash': '$passwordHash'
+      'vp_password_hash': passwordHash
     },
   );
-  final result = authorizeUser.first.first == null;
-  debugPrint('Result of reg: $result');
+  final result = registerUser.first.first as int?;
 
   conn.close();
   return result;
     
   } catch (e) {
     debugPrint('Ошибка подключения к бд из tryRegister: $e');
-    return false;
+    return null;
     }
   }
 

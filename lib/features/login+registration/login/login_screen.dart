@@ -3,7 +3,6 @@ import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:cognitive/features/login+registration/widgets/widgets.dart';
-import 'package:flutter/services.dart';
 import 'package:postgres/postgres.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -54,9 +53,12 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text;
 
     if (name.isNotEmpty && password.isNotEmpty) {
-      if (await tryLogin(name, password)) {
+      final userIdIfLoggin = await tryLogin(name, password);
+      debugPrint('$userIdIfLoggin');
+      if (userIdIfLoggin is int) {
         AuthManager.setUserLoggedIn(true);
         AuthManager.setUsername(name);
+        AuthManager.setUserId(userIdIfLoggin);
 
         debugPrint('Successful auth with Name: $name, Password: $password');
 
@@ -84,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return passwordHash;
   }
 
-  Future<bool> tryLogin(login, password) async {
+  Future<int?> tryLogin(login, password) async {
   try {
     
     final conn = await Connection.open(
@@ -110,14 +112,14 @@ class _LoginScreenState extends State<LoginScreen> {
       'vp_password_hash': passwordHash
     },
   );
-  final result = authorizeUser.first.first == true;
+  final result = authorizeUser.first.first as int?;
 
   conn.close();
   return result;
     
   } catch (e) {
     debugPrint('Ошибка подключения к бд из tryLogin: $e');
-    return false;
+    return null;
     }
   }
 
