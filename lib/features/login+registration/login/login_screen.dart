@@ -127,58 +127,6 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.of(context).pushNamed('/registration');
   }
 
-//   @override
-//   Widget build(BuildContext context) {
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Вход'),
-//         centerTitle: true,
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             CustomTextField(
-//               hintText: 'Введите логин',
-//               controller: _nameController,
-//             ),
-//             const SizedBox(height: 16.0),
-//             CustomTextField(
-//               hintText: 'Введите пароль',
-//               isPassword: true,
-//               controller: _passwordController,
-//             ),
-//             const SizedBox(height: 20.0),
-//             ElevatedButton(
-//               onPressed: isButtonDisabled ? null : _login,
-//               child: const Text('Войти!'),
-//             ),
-//             const SizedBox(height: 20.0),
-//             RichText(
-//               text: TextSpan(
-//                 text: 'Нет аккаунта? ',
-//                 style: const TextStyle(color: Colors.black),
-//                 children: [
-//                   TextSpan(
-//                     text: 'Зарегистрироваться',
-//                     style: const TextStyle(
-//                       color: Color.fromARGB(255, 117, 57, 208),
-//                       fontWeight: FontWeight.bold,
-//                     ),
-//                     recognizer: TapGestureRecognizer()
-//                       ..onTap =_goToRegisterScreen,
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 @override
   Widget build(BuildContext context) {
     return Scaffold(
