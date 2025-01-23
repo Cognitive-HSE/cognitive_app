@@ -14,7 +14,7 @@ class _TestsListScreenState extends State<TestsListScreen> {
     1: "Тест \"Ласточка\"",
     2: "Тест \"Запоминание чисел\"",
     3: "Тест \"Пятнашки\"",
-    //4: "Тест \"Струпа цвета\"", 
+    4: "Тест \"Струпа\"", 
     //5: "Тест \"Струпа оттенки\"", 
   };
 
@@ -46,16 +46,11 @@ class _TestsListScreenState extends State<TestsListScreen> {
         '/testList/tagTestDescription',
       );
     }
-    //if (testIndex == 4) {
-      //Navigator.of(context).pushNamed(
-        //'/testList/stroopColorTestDescription', // Замените на ваш путь
-      //);
-    //}
-    //if (testIndex == 5) {
-     // Navigator.of(context).pushNamed(
-        //'/testList/stroopShadeTestDescription', // Замените на ваш путь
-      //);
-    //}
+    if (testIndex == 4) {
+      Navigator.of(context).pushNamed(
+        '/testList/stroopColorTestDescription', // Замените на ваш путь
+      );
+    }
   }
 
   @override
