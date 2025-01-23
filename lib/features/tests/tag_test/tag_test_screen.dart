@@ -1,5 +1,8 @@
 import 'dart:async';
+import 'package:cognitive/cognitive_app.dart';
+import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:postgres/postgres.dart';
 
 class TagTestScreen extends StatefulWidget {
   const TagTestScreen({super.key});
@@ -9,6 +12,7 @@ class TagTestScreen extends StatefulWidget {
 }
 
 class _TagTestScreenState extends State<TagTestScreen> {
+  final testId = 4;
   List<String> _tiles = [];
   int _moves = 0;
   int _timeElapsed = 0;
@@ -16,6 +20,7 @@ class _TagTestScreenState extends State<TagTestScreen> {
   bool _gameStarted = false;
   bool _gameEnded = false;
   String _endMessage = '';
+  int isSolved = 0;
   Color _endMessageColor = Colors.green.shade100; // Добавляем цвет фона сообщения
 
   String get formattedTime {
@@ -105,6 +110,7 @@ class _TagTestScreenState extends State<TagTestScreen> {
   }
 
   void _testVictory() {
+    resultsToDB();
     setState(() {
       if (!_gameStarted) {
         _moves = 0;
@@ -126,6 +132,89 @@ class _TagTestScreenState extends State<TagTestScreen> {
       });
     }
   }
+
+  Future<bool> resultsToDB() async {
+  try {
+    
+    final conn = await Connection.open(
+      Endpoint(
+        host: '79.137.204.140',
+        port: 5000,
+        database: 'cognitive_dev',
+        username: 'cognitive_developer',
+        password: 'cognitive_developer',
+      ),
+      settings: ConnectionSettings(sslMode: SslMode.disable),
+    );
+
+    debugPrint('Подключение к бд из resultsToDB успешно');
+
+    final secodsInterval = formatToInterval(_timeElapsed);
+    final userId = AuthManager.getUserId();
+
+    if (_isSolved()) {
+      isSolved = 1;
+    }
+
+    //request processing
+    final sendResults = await conn.execute(
+    Sql.named('''
+    SELECT cognitive."f\$test_results__write"(
+    vp_user_id => @vp_user_id, 
+    vp_test_id => @vp_test_id,
+    vp_number_all_answers => @vp_number_all_answers,
+    vp_number_correct_answers => @vp_number_correct_answers,
+    vp_complete_time => @vp_complete_time
+    )'''
+    ),
+    parameters: {
+      'vp_user_id': userId, 
+      'vp_test_id': testId,
+      'vp_number_all_answers': 1,
+      'vp_number_correct_answers': isSolved,
+      'vp_complete_time': secodsInterval,
+      
+    },
+  );
+  debugPrint('$sendResults');
+  final result = sendResults.isEmpty == true;
+
+  conn.close();
+  return result;
+    
+  } catch (e) {
+    debugPrint('Ошибка подключения к бд из resultsToDB: $e');
+    _showDatabaseError('Не удалось сохранить результаты теста');
+    return false;
+    }
+  }
+
+void _showDatabaseError(String errorMessage) {
+  scaffoldMessengerKey.currentState?.showSnackBar(
+    SnackBar(
+      content: Text(
+        errorMessage,
+        style: const TextStyle(fontSize: 16),
+      ),
+      backgroundColor: Color.fromARGB(255, 227, 49, 37),
+      duration: const Duration(seconds: 3),
+    ),
+  );
+}
+
+
+  String formatToInterval(int secs) {
+  int hours = secs ~/ 3600; // Часы
+  int minutes = (secs % 3600) ~/ 60; // Минуты
+  int seconds = secs % 60; // Секунды
+
+  // Форматируем с ведущими нулями
+  String hoursStr = hours.toString().padLeft(2, '0');
+  String minutesStr = minutes.toString().padLeft(2, '0');
+  String secondsStr = seconds.toString().padLeft(2, '0');
+
+  return '$hoursStr:$minutesStr:$secondsStr';
+}
 
   @override
   void dispose() {
