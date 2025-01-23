@@ -8,8 +8,8 @@ import 'package:cognitive/features/tests/munstTest/munst_test_screen.dart';
 import 'package:cognitive/features/tests/munstTest/munst_test_description_screen.dart';
 import 'package:cognitive/features/tests/numberTest/number_test_description_screen.dart';
 import 'package:cognitive/features/tests/numberTest/number_test_screen.dart';
-import 'package:cognitive/features/tests/test/tag_test_screen.dart';
-import 'package:cognitive/features/tests/test/tag_test_description_screen.dart';
+import 'package:cognitive/features/tests/tag_test/tag_test_screen.dart';
+import 'package:cognitive/features/tests/tag_test/tag_test_description_screen.dart';
 import 'package:cognitive/features/tests_list/tests_list_screen.dart';
 import '../features/login+registration/registration/success_reg_screen.dart';
 

@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:cognitive/cognitive_app.dart';
 import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:postgres/postgres.dart';
 
 class NumberTestScreen extends StatefulWidget {
@@ -16,6 +18,7 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
   int startNumberCount = 4;
   int finishNumberCount = 7;
   int rightAnswers = 0;
+  int allAnswers = 0;
   List<int> numbersToRemember = [];
   List<int> userInput = [];
   bool showNumbers = false;
@@ -25,6 +28,9 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
   void initState() {
     super.initState();
     generateNumbers();
+    setState(() {
+      allAnswers = finishNumberCount - startNumberCount + 1;
+    });
   }
 
   void generateNumbers() {
@@ -78,13 +84,13 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
 
     debugPrint('Подключение к бд из resultsToDB успешно');
 
-    final userName = AuthManager.getUsername();
+    final userId = AuthManager.getUserId();
 
     //request processing
     final sendResults = await conn.execute(
     Sql.named('''
-    SELECT cognitive."f\$test_results__write2"(
-    vp_user_name => @vp_user_name, 
+    SELECT cognitive."f\$test_results__write"(
+    vp_user_id => @vp_user_id, 
     vp_test_id => @vp_test_id,
     vp_number_all_answers => @vp_number_all_answers,
     vp_number_correct_answers => @vp_number_correct_answers,
@@ -92,9 +98,9 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
     )'''
     ),
     parameters: {
-      'vp_user_name': '$userName', 
+      'vp_user_id': userId,  
       'vp_test_id': testId,
-      'vp_number_all_answers': finishNumberCount - startNumberCount + 1,
+      'vp_number_all_answers': allAnswers,
       'vp_number_correct_answers': rightAnswers,
       'vp_complete_time': null
       
@@ -108,11 +114,26 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
     
   } catch (e) {
     debugPrint('Ошибка подключения к бд из resultsToDB: $e');
+    _showDatabaseError('Не удалось сохранить результаты теста');
     return false;
     }
   }
 
+void _showDatabaseError(String errorMessage) {
+  scaffoldMessengerKey.currentState?.showSnackBar(
+    SnackBar(
+      content: Text(
+        errorMessage,
+        style: const TextStyle(fontSize: 16),
+      ),
+      backgroundColor: Color.fromARGB(255, 227, 49, 37),
+      duration: const Duration(seconds: 3),
+    ),
+  );
+}
+
   void finishTestMessage(foundWords, ) {
+    resultsToDB();
       showDialog(
       context: context,
       barrierDismissible: false,
@@ -121,7 +142,6 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
         actions: [
           TextButton(
               onPressed: () {
-                resultsToDB();
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/testList', (route) => false);
               },
@@ -168,6 +188,9 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 5),
                           child: TextField(
                             keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp(r'^[0-9]$')), // Только одно число
+                            ],
                             onChanged: (value) {
                               if (value.isNotEmpty) {
                                 userInput[index] = int.parse(value);

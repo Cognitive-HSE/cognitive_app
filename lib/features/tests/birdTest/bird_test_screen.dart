@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cognitive/cognitive_app.dart';
 import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:postgres/postgres.dart';
@@ -182,13 +183,13 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
     debugPrint('Подключение к бд из resultsToDB успешно');
 
     final secodsInterval = formatToInterval(testDuration - timerSeconds);
-    final userName = AuthManager.getUsername();
+    final userId = AuthManager.getUserId();
 
     //request processing
     final sendResults = await conn.execute(
     Sql.named('''
-    SELECT cognitive."f\$test_results__write2"(
-    vp_user_name => @vp_user_name, 
+    SELECT cognitive."f\$test_results__write"(
+    vp_user_id => @vp_user_id, 
     vp_test_id => @vp_test_id,
     vp_number_all_answers => @vp_number_all_answers,
     vp_number_correct_answers => @vp_number_correct_answers,
@@ -196,7 +197,7 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
     )'''
     ),
     parameters: {
-      'vp_user_name': userName, 
+      'vp_user_id': userId, 
       'vp_test_id': testId,
       'vp_number_all_answers': allAnswers,
       'vp_number_correct_answers': rightAnswers,
@@ -212,9 +213,23 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
     
   } catch (e) {
     debugPrint('Ошибка подключения к бд из resultsToDB: $e');
+    _showDatabaseError('Не удалось сохранить результаты теста');
     return false;
     }
   }
+
+void _showDatabaseError(String errorMessage) {
+  scaffoldMessengerKey.currentState?.showSnackBar(
+    SnackBar(
+      content: Text(
+        errorMessage,
+        style: const TextStyle(fontSize: 16),
+      ),
+      backgroundColor: Color.fromARGB(255, 227, 49, 37),
+      duration: const Duration(seconds: 3),
+    ),
+  );
+}
 
   @override
   void dispose() {
