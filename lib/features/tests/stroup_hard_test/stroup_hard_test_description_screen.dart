@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
 
-class StrupTestDescriptionScreen extends StatefulWidget {
-  const StrupTestDescriptionScreen({super.key});
+class ColorBlindTestDescriptionScreen extends StatefulWidget {
+  const ColorBlindTestDescriptionScreen({super.key});
 
   @override
-  State<StrupTestDescriptionScreen> createState() => _StrupTestDescriptionScreenState();
+  State<ColorBlindTestDescriptionScreen> createState() => _ColorBlindTestDescriptionScreenState();
 }
 
-class _StrupTestDescriptionScreenState extends State<StrupTestDescriptionScreen> {
-  
+class _ColorBlindTestDescriptionScreenState extends State<ColorBlindTestDescriptionScreen> {
+
   @override
   void dispose() {
     super.dispose();
   }
 
-  void _goToFinishTest() {
+    void _goToTest() {
     debugPrint("User are going to finish test");
         Navigator.pushNamedAndRemoveUntil(
-      context, 
-      '/strupTest', 
+      context,
+      '/stroupHardTest',
       (route) => false
     );
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Тест "Струпа"',
+          'Тест Струпа усложненный',
           style: TextStyle(color: Colors.white), // Белый цвет текста
         ),
         backgroundColor: Color(0xFF373737), 
@@ -49,8 +49,7 @@ class _StrupTestDescriptionScreenState extends State<StrupTestDescriptionScreen>
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  '''Описание теста:\nТест Струпа
-                  ''',
+                  'Описание теста: \nНа экране появится животное, цвет которого будет близок к фону. Нажимайте кнопку "Еще раз", пока картинка не станет почти невидимой, и когда решите, что больше не видите, нажимайте "Не вижу".',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
@@ -68,7 +67,7 @@ class _StrupTestDescriptionScreenState extends State<StrupTestDescriptionScreen>
                     borderRadius: BorderRadius.circular(10), // Скругленные углы
                   ),
                 ),
-                onPressed: _goToFinishTest,
+                onPressed: _goToTest,
                 child: const Text('Начать тест'),
               ),
             ],

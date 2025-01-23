@@ -15,7 +15,7 @@ class _TestsListScreenState extends State<TestsListScreen> {
     2: "Тест \"Запоминание чисел\"",
     3: "Тест \"Пятнашки\"",
     4: "Тест Струпа", 
-    //5: "Тест \"Струпа оттенки\"", 
+    5: "Тест Струпа усложненный", 
   };
 
   @override
@@ -48,7 +48,12 @@ class _TestsListScreenState extends State<TestsListScreen> {
     }
     if (testIndex == 4) {
       Navigator.of(context).pushNamed(
-        '/strupTest', 
+        '/testList/strupTestDescription', 
+      );
+    }
+    if (testIndex == 5) {
+      Navigator.of(context).pushNamed(
+        '/testList/stroupHardTestDescription', 
       );
     }
   }
