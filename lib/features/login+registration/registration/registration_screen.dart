@@ -127,36 +127,80 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      backgroundColor: const Color(0xFF373737), // Фон
       appBar: AppBar(
-        title: const Text('Регистрация'),
+        title: const Text(
+          'Регистрация',
+          style: TextStyle(color: Colors.white), // Белый цвет текста
+        ),
+        backgroundColor: const Color(0xFF373737),
         centerTitle: true,
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CustomTextField(
-              hintText: 'Придумайте никнейм',
-              controller: _nameController,
+             Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF4A4A4A),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextField(
+                controller: _nameController,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                    hintText: 'Придумайте никнейм',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14)),
+                
+              ),
             ),
             const SizedBox(height: 16.0),
-            CustomTextField(
-              hintText: 'Придумайте пароль',
-              isPassword: true,
-              controller: _passwordController,
+             Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF4A4A4A),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextField(
+                controller: _passwordController,
+                 obscureText: true,
+                style: const TextStyle(color: Colors.white),
+                 decoration: const InputDecoration(
+                    hintText: 'Придумайте пароль',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14)),
+               
+              ),
             ),
             const SizedBox(height: 16.0),
-            CustomTextField(
-              hintText: 'Повторите пароль',
-              isPassword: true,
-              controller: _repeatedPasswordController,
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF4A4A4A),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextField(
+                controller: _repeatedPasswordController,
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                    hintText: 'Повторите пароль',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14)),
+              ),
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: isButtonDisabled ? null : _register,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4A4A4A), //  цвет кнопки
+                  foregroundColor: Colors.white, // цвет текста кнопки
+                ),
               child: const Text('Зарегистрироваться!'),
             ),
           ],
