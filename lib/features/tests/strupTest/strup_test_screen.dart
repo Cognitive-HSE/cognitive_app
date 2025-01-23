@@ -1,6 +1,10 @@
+import 'package:cognitive/cognitive_app.dart';
+import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
+
+import 'package:postgres/postgres.dart';
 
 class StrupTestScreen extends StatefulWidget {
   const StrupTestScreen({super.key});
@@ -10,6 +14,7 @@ class StrupTestScreen extends StatefulWidget {
 }
 
 class _StrupTestScreenState extends State<StrupTestScreen> {
+  final testId = 5;
   int currentStage = 1;
   int currentQuestion = 0;
   int correctAnswers = 0;
@@ -171,6 +176,7 @@ class _StrupTestScreenState extends State<StrupTestScreen> {
   }
 
   void _showResult() {
+    resultsToDB();
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -283,6 +289,70 @@ class _StrupTestScreenState extends State<StrupTestScreen> {
     });
     _nextQuestion();
   }
+
+  Future<bool> resultsToDB() async {
+  try {
+    
+    final conn = await Connection.open(
+      Endpoint(
+        host: '79.137.204.140',
+        port: 5000,
+        database: 'cognitive_dev',
+        username: 'cognitive_developer',
+        password: 'cognitive_developer',
+      ),
+      settings: ConnectionSettings(sslMode: SslMode.disable),
+    );
+
+    debugPrint('Подключение к бд из resultsToDB успешно');
+
+    final userId = AuthManager.getUserId();
+
+    //request processing
+    final sendResults = await conn.execute(
+    Sql.named('''
+    SELECT cognitive."f\$test_results__write"(
+    vp_user_id => @vp_user_id, 
+    vp_test_id => @vp_test_id,
+    vp_number_all_answers => @vp_number_all_answers,
+    vp_number_correct_answers => @vp_number_correct_answers,
+    vp_complete_time => @vp_complete_time
+    )'''
+    ),
+    parameters: {
+      'vp_user_id': userId, 
+      'vp_test_id': testId,
+      'vp_number_all_answers': 18,
+      'vp_number_correct_answers': correctAnswers,
+      'vp_complete_time': null,
+      
+    },
+  );
+  debugPrint('$sendResults');
+  final result = sendResults.isEmpty == true;
+
+  conn.close();
+  return result;
+    
+  } catch (e) {
+    debugPrint('Ошибка подключения к бд из resultsToDB: $e');
+    _showDatabaseError('Не удалось сохранить результаты теста');
+    return false;
+    }
+  }
+
+void _showDatabaseError(String errorMessage) {
+  scaffoldMessengerKey.currentState?.showSnackBar(
+    SnackBar(
+      content: Text(
+        errorMessage,
+        style: const TextStyle(fontSize: 16),
+      ),
+      backgroundColor: Color.fromARGB(255, 227, 49, 37),
+      duration: const Duration(seconds: 3),
+    ),
+  );
+}
 
   Widget _buildAnswerButton(Color color) {
     return ElevatedButton(

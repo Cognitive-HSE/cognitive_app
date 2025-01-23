@@ -53,6 +53,7 @@ class ColorBlindTestScreen extends StatefulWidget {
 }
 
 class _ColorBlindTestScreenState extends State<ColorBlindTestScreen> {
+  final testId = 6;
   late Color _backgroundColor;
   late Color _animalColor;
   int _clickCount = 0;
