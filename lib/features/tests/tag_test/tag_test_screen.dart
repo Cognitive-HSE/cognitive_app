@@ -16,6 +16,7 @@ class _TagTestScreenState extends State<TagTestScreen> {
   bool _gameStarted = false;
   bool _gameEnded = false;
   String _endMessage = '';
+  Color _endMessageColor = Colors.green.shade100; // Добавляем цвет фона сообщения
 
   String get formattedTime {
     final minutes = (_timeElapsed ~/ 60).toString().padLeft(2, '0');
@@ -24,7 +25,7 @@ class _TagTestScreenState extends State<TagTestScreen> {
   }
 
   String get motivationalMessage {
-    if (_moves <= 50) return 'Феноменальный результат! Вы прирождённый стратег!';
+    if (_moves <= 50) return 'Продолжайте тренироваться, чтобы улучшить свой результат!';
     if (_moves <= 150) return 'Отличная работа! Вы проявили аналитическое мышление.';
     if (_moves <= 300) return 'Хорошо! Немного практики, и результат улучшится.';
     return 'Вы сделали это! Продолжайте тренироваться для улучшения навыков.';
@@ -94,13 +95,12 @@ class _TagTestScreenState extends State<TagTestScreen> {
       _timer = null;
     }
 
-    final isVictory = _tiles.join('') == '123456789101112131415';
-
     setState(() {
       _gameEnded = true;
-      _endMessage = (isVictory && success)
+            _endMessage = success
           ? 'Поздравляем! Вы успешно собрали головоломку!'
           : 'Игра завершена.';
+      _endMessageColor = success ? Colors.green.shade100 : Colors.red.shade100; // Устанавливаем цвет
     });
   }
 
@@ -111,7 +111,20 @@ class _TagTestScreenState extends State<TagTestScreen> {
         _timeElapsed = 0;
       }
     });
-    _endGame(true);
+
+    if (_isSolved()) {
+      _endGame(true);
+    } else {
+        if (_timer != null) {  // Остановка таймера
+          _timer!.cancel();
+          _timer = null;
+        }
+      setState(() {
+        _gameEnded = true;
+        _endMessage = 'Не вышло, попробуйте ещё раз!';
+        _endMessageColor = Colors.red.shade100;
+      });
+    }
   }
 
   @override
@@ -170,7 +183,7 @@ class _TagTestScreenState extends State<TagTestScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Ходы: $_moves'),
                   const SizedBox(width: 20.0),
@@ -210,7 +223,7 @@ class _TagTestScreenState extends State<TagTestScreen> {
               Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  color: Colors.green.shade100,
+                  color: _endMessageColor, // Используем переменную для цвета
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Column(
@@ -226,8 +239,8 @@ class _TagTestScreenState extends State<TagTestScreen> {
                     const SizedBox(height: 16.0),
                     ElevatedButton(
                       onPressed: () {
-                      Navigator.pushNamedAndRemoveUntil(
-                      context, '/testList', (route) => false);
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/testList', (route) => false);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(255, 208, 71, 61),
@@ -245,3 +258,6 @@ class _TagTestScreenState extends State<TagTestScreen> {
     );
   }
 }
+
+
+
