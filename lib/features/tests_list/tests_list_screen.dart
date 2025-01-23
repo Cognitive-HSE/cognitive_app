@@ -13,7 +13,7 @@ class TestsListScreen extends StatefulWidget {
 
 class _TestsListScreenState extends State<TestsListScreen> {
   Map tests = {0: "Тест Мюнстерберга", 1: "Тест \"Ласточка\"", 2: "Тест \"Запоминание чисел\"",
-  3: "Тест \"Пятнашки\""};
+  3: "Тест \"Пятнашки\"", 4: "Тест Струпа - усложнённая версия"};
 
 
   @override
@@ -43,6 +43,11 @@ class _TestsListScreenState extends State<TestsListScreen> {
     if (testIndex == 3) {
             Navigator.of(context).pushNamed(
         '/testList/tagTestDescription',
+      );
+    }
+    if (testIndex == 4) {
+            Navigator.of(context).pushNamed(
+        '/testList/stroupHardTestDescription',
       );
     }
   }

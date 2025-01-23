@@ -82,6 +82,7 @@ flutter:
     - assets/birdTest/skyBackground.jpg
     - assets/birdTest/heartIcon.png
     - assets/birdTest/clockIcon.png
+    - assets/StroupHardTest/animal_image.png
     
     
   # An image asset can refer to one or more resolution-specific "variants", see
