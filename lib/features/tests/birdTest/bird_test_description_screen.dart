@@ -24,30 +24,57 @@ class _BirdTestDescriptionScreenState extends State<BirdTestDescriptionScreen> {
       (route) => false
     );
   }
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //title: const Text('Test Description'),
+        title: const Text(
+          'Тест "Ласточка"',
+          style: TextStyle(color: Colors.white), // Белый цвет текста
+        ),
+        backgroundColor: Color(0xFF373737), 
+        centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pop(); // Возвращает пользователя на предыдущий экран
+            Navigator.of(context).pop();
           },
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text('Описание теста: \nУкажите направление ласточки'),
-            ElevatedButton(
-              onPressed: _goToFinishTest,
-              child: const Text('Начать тест'),
-            ),
-          ],
+      body: Container(
+        color: Color(0xFF373737), // Фон страницы
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Подробное описание теста:\n\n'
+                  'В этом тесте вам нужно будет указать направление движения ласточки. '
+                  'Нажмите "Начать тест", чтобы приступить.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white, // Белый цвет текста
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[700], // Цвет кнопки
+                  foregroundColor: Colors.white, // Цвет текста кнопки
+                  minimumSize: const Size(200, 50), // Размер кнопки
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // Скругленные углы
+                  ),
+                ),
+                onPressed: _goToFinishTest,
+                child: const Text('Начать тест'),
+              ),
+            ],
+          ),
         ),
       ),
     );

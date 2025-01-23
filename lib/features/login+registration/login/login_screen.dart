@@ -127,39 +127,73 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.of(context).pushNamed('/registration');
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      backgroundColor: const Color(0xFF373737), // Фон как на скрине
       appBar: AppBar(
-        title: const Text('Вход'),
+        title: const Text(
+          'Вход',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color(0xFF373737),
         centerTitle: true,
+        elevation: 0, // Убираем тень от AppBar
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CustomTextField(
-              hintText: 'Введите логин',
-              controller: _nameController,
+            // CustomTextField
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF4A4A4A),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextField(
+                controller: _nameController,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                    hintText: 'Введите логин',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14)),
+                
+              ),
             ),
-            const SizedBox(height: 16.0),
-            CustomTextField(
-              hintText: 'Введите пароль',
-              isPassword: true,
-              controller: _passwordController,
+             const SizedBox(height: 16.0),
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF4A4A4A),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: TextField(
+                controller: _passwordController,
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+                 decoration: const InputDecoration(
+                    hintText: 'Введите пароль',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14)),
+               
+              ),
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: isButtonDisabled ? null : _login,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4A4A4A), //  цвет кнопки
+                  foregroundColor: Colors.white, // цвет текста кнопки
+                ),
               child: const Text('Войти!'),
             ),
             const SizedBox(height: 20.0),
             RichText(
               text: TextSpan(
                 text: 'Нет аккаунта? ',
-                style: const TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.white),
                 children: [
                   TextSpan(
                     text: 'Зарегистрироваться',

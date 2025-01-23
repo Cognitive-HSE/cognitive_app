@@ -170,6 +170,14 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
         content: Text("Найдено слов: $foundWords\nВремя в секундах: $seconds"),
         actions: [
           TextButton(
+            style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[700], // Цвет кнопки
+                  foregroundColor: Colors.white, // Цвет текста кнопки
+                  minimumSize: const Size(200, 50), // Размер кнопки
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // Скругленные углы
+                  ),
+                ),
               onPressed: () {
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/testList', (route) => false);
@@ -285,14 +293,19 @@ void _showDatabaseError(String errorMessage) {
     super.dispose();
   }
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Тест Мюнстерберга'),
+        title: const Text(
+          'Тест Мюнстерберга',
+          style: TextStyle(color: Colors.white), // Белый цвет текста
+        ),
+        backgroundColor: Color(0xFF373737), 
         centerTitle: true,
       ),
       body: Form(
+        
         key: _formKey,
         child: Column(
           children: [
@@ -328,6 +341,14 @@ void _showDatabaseError(String errorMessage) {
             ),
 
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[700], // Цвет кнопки
+                  foregroundColor: Colors.white, // Цвет текста кнопки
+                  minimumSize: const Size(200, 50), // Размер кнопки
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // Скругленные углы
+                  ),
+                ),
               onPressed: _checkWords,
               child: const Text('Результаты'),
             ),
