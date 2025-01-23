@@ -179,8 +179,17 @@ class _StrupTestScreenState extends State<StrupTestScreen> {
         child: AlertDialog(
           title: const Text("Тест завершен!"),
           content: Text("Правильных ответов: $correctAnswers из 18"),
+          
           actions: [
             TextButton(
+                            style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[700], // Цвет кнопки
+                  foregroundColor: Colors.white, // Цвет текста кнопки
+                  minimumSize: const Size(200, 50), // Размер кнопки
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // Скругленные углы
+                  ),
+                ),
               onPressed: () {
                 Navigator.pushNamedAndRemoveUntil(
                   context,
@@ -218,6 +227,7 @@ class _StrupTestScreenState extends State<StrupTestScreen> {
         onWillPop: () async => false,
         child: AlertDialog(
           title: Text("Этап $currentStage завершен!"),
+          
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,6 +246,14 @@ class _StrupTestScreenState extends State<StrupTestScreen> {
           ),
           actions: [
             TextButton(
+                            style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[700], // Цвет кнопки
+                  foregroundColor: Colors.white, // Цвет текста кнопки
+                  minimumSize: const Size(200, 50), // Размер кнопки
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // Скругленные углы
+                  ),
+                ),
               onPressed: () => _proceedToNextStage(),
               child: const Text("Продолжить"),
             ),
@@ -284,7 +302,12 @@ class _StrupTestScreenState extends State<StrupTestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('Тест Струпа')),
+        title: const Text(
+          'Тест Струпа',
+          style: TextStyle(color: Colors.white), // Белый цвет текста
+        ),
+        backgroundColor: Color(0xFF373737), 
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
