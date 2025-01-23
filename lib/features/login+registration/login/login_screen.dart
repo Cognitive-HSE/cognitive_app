@@ -54,6 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (name.isNotEmpty && password.isNotEmpty) {
       final userIdIfLoggin = await tryLogin(name, password);
+      debugPrint('$userIdIfLoggin');
       if (userIdIfLoggin is int) {
         AuthManager.setUserLoggedIn(true);
         AuthManager.setUsername(name);
