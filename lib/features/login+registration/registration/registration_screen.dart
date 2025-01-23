@@ -1,7 +1,6 @@
 import 'package:bcrypt/bcrypt.dart';
 import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:cognitive/features/login+registration/widgets/widgets.dart';
 import 'package:postgres/postgres.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -56,15 +55,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       if (_passwordController.text == _repeatedPasswordController.text) {
         final userIdIfRegister = await tryRegister(name, passwordHash);
         if (userIdIfRegister is int) {
-          AuthManager.setUserLoggedIn(true);
           AuthManager.setUsername(name);
           AuthManager.setUserId(userIdIfRegister);
-          
+                 
           debugPrint('Successful reg with Name: $name, Password: $passwordHash');
 
         if (mounted) {
+
         Navigator.of(context).pushNamed(
-          '/successReg',
+          '/surveyScreen',
         );
         }
         

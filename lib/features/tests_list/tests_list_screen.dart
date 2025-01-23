@@ -76,7 +76,7 @@ class _TestsListScreenState extends State<TestsListScreen> {
               color: Colors.white, // Белый цвет иконки logout
             ),
             onPressed: () {
-              //AuthManager.setUserLoggedIn(false); // Раскомментируйте, если нужно
+              AuthManager.setUserLoggedIn(false); // Раскомментируйте, если нужно
               Navigator.pushReplacementNamed(context, '/login');
             },
           )
