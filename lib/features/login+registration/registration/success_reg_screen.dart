@@ -28,6 +28,7 @@ class _SuccessRegScreenState extends State<SuccessRegScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF373737), // Темный фон
       appBar: AppBar(
+        automaticallyImplyLeading: false, // Скрыть стрелку "Назад"
         title: const Text(
           'Успешная регистрация',
           style: TextStyle(color: Colors.white),
