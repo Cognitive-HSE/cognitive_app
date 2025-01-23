@@ -132,20 +132,29 @@ void _showDatabaseError(String errorMessage) {
   );
 }
 
-  void finishTestMessage(foundWords, ) {
+  void finishTestMessage() {
     resultsToDB();
-      showDialog(
+    showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
         content: Text("Количество правильных ответов: $rightAnswers"),
         actions: [
           TextButton(
-              onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/testList', (route) => false);
-              },
-              child: const Text('Вернуться к тестам'))
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey[700],
+              foregroundColor: Colors.white,
+              minimumSize: const Size(200, 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/testList', (route) => false);
+            },
+            child: const Text('Вернуться к тестам')
+          )
         ],
       ),
     );
@@ -157,7 +166,13 @@ void _showDatabaseError(String errorMessage) {
 
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('Тест на запоминание чисел')),
+        title: const Text(
+          'Тест на запоминание чисел',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Color(0xFF373737),
+        centerTitle: true,
+
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -193,7 +208,17 @@ void _showDatabaseError(String errorMessage) {
                             ],
                             onChanged: (value) {
                               if (value.isNotEmpty) {
-                                userInput[index] = int.parse(value);
+                                try {
+                                  userInput[index] = int.parse(value);
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Пожалуйста, введите только цифры.'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                  userInput[index] = 0; // Сбрасываем некорректный ввод
+                                }
                               }
                             },
                             decoration: InputDecoration(labelText: 'Число ${index + 1}'),
@@ -203,6 +228,14 @@ void _showDatabaseError(String errorMessage) {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[700],
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(200, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
                       onPressed: checkAnswer,
                       child: Text('Проверить'),
                     ),
@@ -256,24 +289,36 @@ void _showDatabaseError(String errorMessage) {
     SizedBox(height: 30),
     if (startNumberCount < finishNumberCount)
       Center(
-        child: ElevatedButton(
-          onPressed: goToNextTest,
-          child: Text('Следующий этап', textAlign: TextAlign.center),
-        ),
-      ),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[700],
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(200, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: goToNextTest,
+                          child: Text('Следующий этап', textAlign: TextAlign.center),
+                        ),
+                      ),
     SizedBox(height: 10),
     if (startNumberCount == finishNumberCount)
     
-      Center(
-        child: ElevatedButton(
-          onPressed: () {
-            
-            finishTestMessage(rightAnswers);
-          
-          },
-          child: Text('Вернуться к тестам', textAlign: TextAlign.center),
-        ),
-      ),
+Center(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[700],
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(200, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: finishTestMessage,
+                          child: Text('Вернуться к тестам', textAlign: TextAlign.center),
+                        ),
+                      ),
   ],
 ),
 
