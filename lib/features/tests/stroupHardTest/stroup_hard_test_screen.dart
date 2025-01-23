@@ -101,6 +101,14 @@ class _ColorBlindTestScreenState extends State<ColorBlindTestScreen> {
       return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
+   void _goToTestList() {
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/testList',
+      (route) => false,
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -148,9 +156,13 @@ class _ColorBlindTestScreenState extends State<ColorBlindTestScreen> {
           const SizedBox(height: 20,),
           Text('Количество кликов: $_clickCount', style: const TextStyle(fontSize: 20, color: Colors.white)),
           const SizedBox(height: 20,),
-          ElevatedButton(onPressed: _onTryAgainPressed, child: const Text('Попробовать снова'))
+          ElevatedButton(onPressed: _onTryAgainPressed, child: const Text('Попробовать снова')),
+          const SizedBox(height: 20,),
+           ElevatedButton(
+            onPressed: _goToTestList, // Добавлена кнопка возврата к списку тестов
+             child: const Text('Вернуться к списку тестов'),
+          ),
       ],
     );
   }
 }
-
