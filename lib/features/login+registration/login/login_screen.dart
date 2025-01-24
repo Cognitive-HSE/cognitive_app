@@ -1,8 +1,8 @@
 import 'package:bcrypt/bcrypt.dart';
+import 'package:cognitive/features/database_config.dart';
 import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:cognitive/features/login+registration/widgets/widgets.dart';
 import 'package:postgres/postgres.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -91,11 +91,11 @@ class _LoginScreenState extends State<LoginScreen> {
     
     final conn = await Connection.open(
       Endpoint(
-        host: '79.137.204.140',
-        port: 5000,
-        database: 'cognitive_dev',
-        username: 'cognitive_developer',
-        password: 'cognitive_developer',
+        host: DatabaseConfig.host,
+        port: DatabaseConfig.port,
+        database: DatabaseConfig.database,
+        username: DatabaseConfig.username,
+        password: DatabaseConfig.password,
       ),
       settings: ConnectionSettings(sslMode: SslMode.disable),
     );
