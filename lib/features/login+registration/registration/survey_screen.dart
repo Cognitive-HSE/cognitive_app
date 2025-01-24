@@ -2,6 +2,7 @@ import 'package:cognitive/cognitive_app.dart';
 import 'package:cognitive/features/database_config.dart';
 import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:postgres/postgres.dart';
 
 class SurveyScreen extends StatefulWidget {
@@ -338,29 +339,33 @@ class _SurveyScreenState extends State<SurveyScreen> {
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hintText,
-    String? Function(String?)? validator,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF4A4A4A),
-        borderRadius: BorderRadius.circular(8.0),
+Widget _buildTextField({
+  required TextEditingController controller,
+  required String hintText,
+  String? Function(String?)? validator,
+}) {
+  return Container(
+    decoration: BoxDecoration(
+      color: const Color(0xFF4A4A4A),
+      borderRadius: BorderRadius.circular(8.0),
+    ),
+    child: TextFormField(
+      controller: controller,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        hintText: hintText,
+        hintStyle: const TextStyle(color: Colors.grey),
+        border: InputBorder.none,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
-      child: TextFormField(
-        controller: controller,
-        style: const TextStyle(color: Colors.white),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.grey),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        ),
-        validator: validator,
-      ),
-    );
-  }
+      validator: validator,
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp(r'[А-Яа-яЁё\s]+')),
+      ],
+    ),
+  );
+}
+
 
   Widget _buildNumberField({
     required String label,
