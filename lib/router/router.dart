@@ -2,7 +2,7 @@ import 'package:cognitive/features/initial_screen.dart';
 import 'package:cognitive/features/login+registration/login/login_screen.dart';
 import 'package:cognitive/features/login+registration/login/success_login_screen.dart';
 import 'package:cognitive/features/login+registration/registration/registration_screen.dart';
-import 'package:cognitive/features/login+registration/registration/servey_screen.dart';
+import 'package:cognitive/features/login+registration/registration/survey_screen.dart';
 import 'package:cognitive/features/tests/birdTest/bird_test_description_screen.dart';
 import 'package:cognitive/features/tests/birdTest/bird_test_screen.dart';
 import 'package:cognitive/features/tests/munstTest/munst_test_screen.dart';
