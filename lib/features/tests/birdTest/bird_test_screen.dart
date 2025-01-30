@@ -277,10 +277,12 @@ void _showDatabaseError(String errorMessage) {
     final iconSize = 0.5 * (screenSize.width * 0.05 + screenSize.height * 0.05);
 
     return Scaffold(
+
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           // Задний фон с картинкой
+          
           Positioned.fill(
             child: Image.asset(
               'assets/birdTest/skyBackground.jpg',
@@ -292,28 +294,42 @@ void _showDatabaseError(String errorMessage) {
           SafeArea(
               child: Column(
                 children: [
+                  
                   Padding(
-                    padding: const EdgeInsets.only(left: 5),
-                    child: 
-                  Row(
-                    children: [
-                      Image.asset(
-                        "assets/birdTest/clockIcon.png",
-                        width: iconSize,
-                        height: iconSize,
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        '$timerSeconds',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                    ),
-                  ),
+  padding: const EdgeInsets.symmetric(horizontal: 5), // Отступы слева и справа
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Разместить элементы по краям
+    children: [
+      Row(
+        children: [
+          Image.asset(
+            "assets/birdTest/clockIcon.png",
+            width: iconSize,
+            height: iconSize,
+          ),
+          const SizedBox(width: 5),
+          Text(
+            '$timerSeconds',
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+      IconButton(
+        icon: const Icon(Icons.exit_to_app, color: Colors.black),
+        iconSize: iconSize,
+        onPressed: () {
+          Navigator.pushNamedAndRemoveUntil(context, '/testList', (route) => false);
+        },
+      ),
+    ],
+  ),
+),
+
+                  
                   
                   Padding(
                     padding: const EdgeInsets.only(left: 5),

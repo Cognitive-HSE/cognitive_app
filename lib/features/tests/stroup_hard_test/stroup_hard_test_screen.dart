@@ -115,37 +115,59 @@ class _ColorBlindTestScreenState extends State<ColorBlindTestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _backgroundColor,
-      body: Center(
-        child: _isFinished
-            ? _buildResults()
-            : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AnimalImage(
-                  color: _animalColor,
-                  opacity: _opacity,
-                ),
-                const SizedBox(height: 20),
-                Row(
+      body: Stack(
+      children: [
+        Center(
+          child: _isFinished
+              ? _buildResults()
+              : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ElevatedButton(
-                      onPressed: _onTryClick,
-                      child: const Text('Ещё раз'),
+                    AnimalImage(
+                      color: _animalColor,
+                      opacity: _opacity,
                     ),
-                    const SizedBox(width: 20,),
-                    ElevatedButton(
-                      onPressed: _onFinished,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                      ),
-                      child: const Text('Не вижу', style: TextStyle(color: Colors.white),),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: _onTryClick,
+                          child: const Text('Ещё раз'),
+                        ),
+                        const SizedBox(width: 20),
+                        ElevatedButton(
+                          onPressed: _onFinished,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                          child: const Text(
+                            'Не вижу',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
-                )
-              ],
-            ),
-      ),
+                ),
+        ),
+        Positioned(
+          top: 40,
+          right: 20,
+          child: IconButton(
+            icon: const Icon(Icons.exit_to_app, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/testList',
+                (route) => false,
+              );
+            },
+          ),
+        ),
+      ],
+    ),
+
     );
   }
   Widget _buildResults(){
