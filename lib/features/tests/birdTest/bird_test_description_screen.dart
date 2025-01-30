@@ -50,7 +50,7 @@ class _BirdTestDescriptionScreenState extends State<BirdTestDescriptionScreen> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  'Подробное описание теста:\n\n'
+                  'Описание теста:\n\n'
                   'В этом тесте вам нужно будет указать направление движения ласточки. '
                   'Нажмите "Начать тест", чтобы приступить.',
                   textAlign: TextAlign.center,

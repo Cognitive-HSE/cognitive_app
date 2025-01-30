@@ -49,7 +49,7 @@ class _ColorBlindTestDescriptionScreenState extends State<ColorBlindTestDescript
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  'Описание теста: \nНа экране появится животное, цвет которого будет близок к фону. Нажимайте кнопку "Еще раз", пока картинка не станет почти невидимой, и когда решите, что больше не видите, нажимайте "Не вижу".',
+                  'Описание теста:\n\nНа экране появится животное, цвет которого будет близок к фону. Нажимайте кнопку "Еще раз", пока картинка не станет почти невидимой, и когда решите, что больше не видите, нажимайте "Не вижу".',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
