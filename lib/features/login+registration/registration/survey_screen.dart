@@ -29,9 +29,10 @@ class _SurveyScreenState extends State<SurveyScreen> {
   int? _weight;
   String? _dominantHand;
   bool? _smoking;
-  bool? _alcohol;
+  String? _alcohol;
   bool? _insomnia;
   bool? _gamer;
+  int? _wellBeing;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -128,7 +129,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
       'vp_alcohol': _alcohol,
       'vp_sport': _sportsController.text,
       'vp_insomnia': _insomnia,
-      'vp_current_health': _wellBeingController.text,
+      'vp_current_health': _wellBeing,
       'vp_gaming': _gamer,
     },
   );
@@ -194,14 +195,34 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   return null;
                 },
               ),
-              // const SizedBox(height: 16),
-              // _buildDropdownField(
-              //   label: 'Пол',
-              //   value: _gender,
-              //   items: ['Мужской', 'Женский'],
-              //   onChanged: (value) => setState(() => _gender = value),
-              //   validator: (value) => value == null ? 'Выберите пол' : null,
-              // ),
+              const SizedBox(height: 16),
+              const Text('Как вы себя чувствуете сейчас?', style: TextStyle(color: Colors.white)),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(5, (index) {
+                  List<String> emojis = ['😢', '🙁', '😐', '🙂', '😁'];
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _wellBeing = index;
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: _wellBeing == index ? Colors.white : Colors.transparent,
+                      ),
+                      child: Text(
+                        emojis[index],
+                        style: TextStyle(fontSize: 30),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+
               const SizedBox(height: 16),
               _buildDropdownField(
                 label: 'Базовое образование',
@@ -226,9 +247,11 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 label: 'Место основного проживания',
                 value: _residence,
                 items: [
-                  'Регион, областной центр',
-                  'Город менее 100 тыс.',
-                  'Село, деревня'
+                  'Столичный город (Москва или Санкт-Петербург)',
+                  'Областной центр',
+                  'Районный центр',
+                  'Малый город или поселок городского типа',
+                  'Деревня/село'
                 ],
                 onChanged: (value) => setState(() => _residence = value),
                 validator: (value) => value == null ? 'Выберите место проживания' : null,
@@ -282,10 +305,18 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 onChanged: (value) => setState(() => _smoking = value),
               ),
               const SizedBox(height: 16),
-              _buildSwitchField(
-                label: 'Алкоголь',
+              _buildDropdownField(
+                label: 'Как часто Вы употребляете алкогольные напитки?',
                 value: _alcohol,
+                items: [
+                  'Никогда',
+                  'Раз в месяц или реже',
+                  '2-4 раза в месяц',
+                  '2-3 раза в неделю',
+                  '4 раза в неделю и чаще'
+                ],
                 onChanged: (value) => setState(() => _alcohol = value),
+                validator: (value) => value == null ? 'Выберите регулярность' : null,
               ),
               const SizedBox(height: 16),
               _buildTextField(
@@ -300,18 +331,20 @@ class _SurveyScreenState extends State<SurveyScreen> {
                 onChanged: (value) => setState(() => _insomnia = value),
               ),
               const SizedBox(height: 16),
-              _buildTextField(
-                controller: _wellBeingController,
-                hintText: 'Самочувствие на данный момент',
-                validator: (value) => value == null || value.isEmpty ? 'Это поле обязательно' : null,
-              ),
-              const SizedBox(height: 16),
               _buildSwitchField(
                 label: 'Являетесь ли геймером',
                 value: _gamer,
                 onChanged: (value) => setState(() => _gamer = value),
               ),
               const SizedBox(height: 24),
+              Center(
+              child: const Text(
+                'Перед началом тестирования просим Вас сосредоточиться и по возможности пройти все шесть предложенных тестов. Это займет примерно 15 минут',
+                style: TextStyle(color: Colors.white), 
+                textAlign: TextAlign.center,
+              ),
+              ),
+            const SizedBox(height: 24),
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -321,6 +354,16 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   onPressed: isButtonDisabled
                   ? null
                   : () async {
+                              if (_wellBeing == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Оцените свое самочувствие'),
+                backgroundColor: Colors.red,
+              ),
+            );
+            return;
+          }
+    
                     if (_formKey.currentState?.validate() ?? false) {
                       final isResultsSendSuccess = await resultsToDB();
                       if (isResultsSendSuccess) {

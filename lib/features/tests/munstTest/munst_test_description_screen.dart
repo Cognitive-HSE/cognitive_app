@@ -30,7 +30,7 @@ class _MunstTestDescriptionScreenState extends State<MunstTestDescriptionScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Тест Мюнтсерберга',
+          'Тест Мюнстерберга',
           style: TextStyle(color: Colors.white), // Белый цвет текста
         ),
         backgroundColor: Color(0xFF373737), 
@@ -52,7 +52,7 @@ class _MunstTestDescriptionScreenState extends State<MunstTestDescriptionScreen>
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
                   'Описание теста:\n\n'
-                  'Найдите и выделите слова',
+                  'Среди буквенного текста имеются слова. Ваша задача – просматривая строку за строкой, как можно быстрее найти эти слова и выделить их нажатием на каждую букву из найденного слова',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
