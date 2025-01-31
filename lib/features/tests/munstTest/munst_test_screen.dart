@@ -20,6 +20,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
   final _formKey = GlobalKey<FormState>();
   List<String> characters = [];
   List<int> selectedIndexes = [];
+  List<int> resIndexes = [];
   List<String> dictionary = [
     'ДОМ',
     'ГОРН',
@@ -109,8 +110,12 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
     'СОВА'
   ]; // Список слов, которые нужно найти
   List<String> wordsToFind = [];
+  bool isButtonDisabled = true;
+  bool isOver = false;
   int seconds = 0;
   int foundWords = 0;
+  int startIndex = 0;
+  int endIndex = 0;
   late Timer timer;
 
   @override
@@ -119,6 +124,10 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
     _generateCharacters(200);
     seconds = 0;
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      if (seconds == 120) {
+        timer.cancel();
+        _checkWords();
+      }
       setState(() {
         seconds++;
       });
@@ -135,15 +144,15 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
       }
     });
   }
-
 //сколько выделено слов
+
   void _checkWords() {
     // int foundWords = 0;
     for (int i = 0; i < characters.length; ++i) {
-      if (selectedIndexes.contains(i)) {
-        if (List.generate(wordsToFind.length, (int k) => wordsToFind[k][0])
-            .contains(characters[i])) {
-          for (int j = 0; j < wordsToFind.length; ++j) {
+      if (List.generate(wordsToFind.length, (int k) => wordsToFind[k][0])
+          .contains(characters[i])) {
+        for (int j = 0; j < wordsToFind.length; ++j) {
+          if (wordsToFind[j].length < characters.length - i) {
             if (characters.sublist(i, i + wordsToFind[j].length).join() ==
                 wordsToFind[j]) {
               if (selectedIndexes.toSet().containsAll(
@@ -153,6 +162,9 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
                   foundWords++;
                   break;
                 }
+              } else {
+                resIndexes.addAll(
+                    List.generate(wordsToFind[j].length, (int m) => i + m));
               }
             }
           }
@@ -164,6 +176,14 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
     resultsToDB();
 
     timer.cancel(); // stop timer when results shown
+
+    isButtonDisabled = false;
+    isOver = true;
+
+    setState(() {});
+  }
+
+  void _dialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -171,14 +191,14 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
         content: Text("Найдено слов: $foundWords\nВремя в секундах: $seconds"),
         actions: [
           TextButton(
-            style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[700], // Цвет кнопки
-                  foregroundColor: Colors.white, // Цвет текста кнопки
-                  minimumSize: const Size(200, 50), // Размер кнопки
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Скругленные углы
-                  ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[700], // Цвет кнопки
+                foregroundColor: Colors.white, // Цвет текста кнопки
+                minimumSize: const Size(200, 50), // Размер кнопки
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // Скругленные углы
                 ),
+              ),
               onPressed: () {
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/testList', (route) => false);
@@ -190,69 +210,65 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
   }
 
   Future<bool> resultsToDB() async {
-  try {
-    
-    final conn = await Connection.open(
-      Endpoint(
-        host: DatabaseConfig.host,
-        port: DatabaseConfig.port,
-        database: DatabaseConfig.database,
-        username: DatabaseConfig.username,
-        password: DatabaseConfig.password,
-      ),
-      settings: ConnectionSettings(sslMode: SslMode.disable),
-    );
+    try {
+      final conn = await Connection.open(
+        Endpoint(
+          host: DatabaseConfig.host,
+          port: DatabaseConfig.port,
+          database: DatabaseConfig.database,
+          username: DatabaseConfig.username,
+          password: DatabaseConfig.password,
+        ),
+        settings: ConnectionSettings(sslMode: SslMode.disable),
+      );
 
-    debugPrint('Подключение к бд из resultsToDB успешно');
+      debugPrint('Подключение к бд из resultsToDB успешно');
 
-    final secodsInterval = formatToInterval(seconds);
-    final userId = AuthManager.getUserId();
+      final secodsInterval = formatToInterval(seconds);
+      final userId = AuthManager.getUserId();
 
-    //request processing
-    final sendResults = await conn.execute(
-    Sql.named('''
+      //request processing
+      final sendResults = await conn.execute(
+        Sql.named('''
     SELECT cognitive."f\$test_results__write"(
     vp_user_id => @vp_user_id, 
     vp_test_id => @vp_test_id,
     vp_number_all_answers => @vp_number_all_answers,
     vp_number_correct_answers => @vp_number_correct_answers,
     vp_complete_time => @vp_complete_time
-    )'''
-    ),
-    parameters: {
-      'vp_user_id': userId, 
-      'vp_test_id': testId,
-      'vp_number_all_answers': wordsToFind.length,
-      'vp_number_correct_answers': foundWords,
-      'vp_complete_time': secodsInterval,
-      
-    },
-  );
-  debugPrint('$sendResults');
-  final result = sendResults.isEmpty == true;
+    )'''),
+        parameters: {
+          'vp_user_id': userId,
+          'vp_test_id': testId,
+          'vp_number_all_answers': wordsToFind.length,
+          'vp_number_correct_answers': foundWords,
+          'vp_complete_time': secodsInterval,
+        },
+      );
+      debugPrint('$sendResults');
+      final result = sendResults.isEmpty == true;
 
-  conn.close();
-  return result;
-    
-  } catch (e) {
-    debugPrint('Ошибка подключения к бд из resultsToDB: $e');
-    _showDatabaseError('Не удалось сохранить результаты теста');
-    return false;
+      conn.close();
+      return result;
+    } catch (e) {
+      debugPrint('Ошибка подключения к бд из resultsToDB: $e');
+      _showDatabaseError('Не удалось сохранить результаты теста');
+      return false;
     }
   }
 
-void _showDatabaseError(String errorMessage) {
-  scaffoldMessengerKey.currentState?.showSnackBar(
-    SnackBar(
-      content: Text(
-        errorMessage,
-        style: const TextStyle(fontSize: 16),
+  void _showDatabaseError(String errorMessage) {
+    scaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(
+          errorMessage,
+          style: const TextStyle(fontSize: 16),
+        ),
+        backgroundColor: Color.fromARGB(255, 227, 49, 37),
+        duration: const Duration(seconds: 3),
       ),
-      backgroundColor: Color.fromARGB(255, 227, 49, 37),
-      duration: const Duration(seconds: 3),
-    ),
-  );
-}
+    );
+  }
 
 //генерация случайного ряда русских букв
   void _generateCharacters(int numberOfChar) {
@@ -266,6 +282,8 @@ void _showDatabaseError(String errorMessage) {
       // Генерируем случайные буквы, вставляя слова
       if (i < wordsToFind.length) {
         if (indices.contains(index) && !indices.contains(index + 1)) {
+          indices = List.generate(wordsToFind.length - i,
+              (int k) => randomCharacter.nextInt(199 - index) + index);
           return wordsToFind[i++];
         }
       }
@@ -275,18 +293,44 @@ void _showDatabaseError(String errorMessage) {
     setState(() {});
   }
 
+  void onTapDown(int index) {
+    startIndex = index;
+    endIndex = index;
+  }
+
+  void onTapUpdate(int index) {
+    //endIndex = index;
+    setState(() {
+      updateSelection();
+    });
+  }
+
+  void onTapUp() {
+    setState(() {
+      updateSelection();
+    });
+  }
+
+  void updateSelection() {
+    if (startIndex != 0 && endIndex != 0) {
+      for (int i = startIndex; i <= endIndex; i++) {
+        _toggleSelection(i);
+      }
+    }
+  }
+
   String formatToInterval(int secs) {
-  int hours = secs ~/ 3600; // Часы
-  int minutes = (secs % 3600) ~/ 60; // Минуты
-  int seconds = secs % 60; // Секунды
+    int hours = secs ~/ 3600; // Часы
+    int minutes = (secs % 3600) ~/ 60; // Минуты
+    int seconds = secs % 60; // Секунды
 
-  // Форматируем с ведущими нулями
-  String hoursStr = hours.toString().padLeft(2, '0');
-  String minutesStr = minutes.toString().padLeft(2, '0');
-  String secondsStr = seconds.toString().padLeft(2, '0');
+    // Форматируем с ведущими нулями
+    String hoursStr = hours.toString().padLeft(2, '0');
+    String minutesStr = minutes.toString().padLeft(2, '0');
+    String secondsStr = seconds.toString().padLeft(2, '0');
 
-  return '$hoursStr:$minutesStr:$secondsStr';
-}
+    return '$hoursStr:$minutesStr:$secondsStr';
+  }
 
   @override
   void dispose() {
@@ -294,7 +338,7 @@ void _showDatabaseError(String errorMessage) {
     super.dispose();
   }
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -315,11 +359,10 @@ void _showDatabaseError(String errorMessage) {
           style: TextStyle(color: Colors.white), // Белый цвет текста
           
         ),
-        backgroundColor: Color(0xFF373737), 
+        backgroundColor: Color(0xFF373737),
         centerTitle: true,
       ),
       body: Form(
-        
         key: _formKey,
         child: Column(
           children: [
@@ -338,14 +381,20 @@ void _showDatabaseError(String errorMessage) {
                 child: Wrap(
                   children: List.generate(characters.length, (index) {
                     return GestureDetector(
-                      onTap: () => _toggleSelection(index),
+                      onTapDown: (_) => onTapDown(index),
+                      onPanUpdate: (_) => onTapUpdate(index),
+                      onTapUp: (_) => onTapUp(),
                       child: Container(
                         padding: const EdgeInsets.all(8.0),
-                        color: selectedIndexes.contains(index)
-                            ? Colors.green
-                            : Colors.white,
-                        child: Text(characters[index],
-                            style: const TextStyle(fontSize: 24)),
+                        color: resIndexes.contains(index)
+                            ? Colors.red
+                            : selectedIndexes.contains(index)
+                                ? Colors.green
+                                : Colors.white,
+                        child: Text(
+                          characters[index],
+                          style: const TextStyle(fontSize: 24),
+                        ),
                       ),
                     );
                   }),
@@ -359,15 +408,28 @@ void _showDatabaseError(String errorMessage) {
 
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[700], // Цвет кнопки
-                  foregroundColor: Colors.white, // Цвет текста кнопки
-                  minimumSize: const Size(200, 50), // Размер кнопки
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Скругленные углы
-                  ),
+                backgroundColor: Colors.grey[700], // Цвет кнопки
+                foregroundColor: Colors.white, // Цвет текста кнопки
+                minimumSize: const Size(200, 50), // Размер кнопки
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // Скругленные углы
                 ),
-              onPressed: _checkWords,
+              ),
+              onPressed: isButtonDisabled ? null : _dialog,
               child: const Text('Результаты'),
+            ),
+
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[700], // Цвет кнопки
+                foregroundColor: Colors.white, // Цвет текста кнопки
+                minimumSize: const Size(200, 50), // Размер кнопки
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // Скругленные углы
+                ),
+              ),
+              onPressed: isOver ? null : _checkWords,
+              child: const Text('Подтвердить'),
             ),
 
             const SizedBox(
