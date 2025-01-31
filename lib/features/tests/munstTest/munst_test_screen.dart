@@ -283,7 +283,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
       if (i < wordsToFind.length) {
         if (indices.contains(index) && !indices.contains(index + 1)) {
           indices = List.generate(wordsToFind.length - i,
-              (int k) => randomCharacter.nextInt(199 - index) + index);
+              (int k) => randomCharacter.nextInt(199 - index) + index + 1);
           return wordsToFind[i++];
         }
       }
@@ -291,32 +291,6 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
           randomCharacter.nextInt(32) % 32); // Псевдослучайные русские буквы
     }).expand((s) => s.split("")).toList();
     setState(() {});
-  }
-
-  void onTapDown(int index) {
-    startIndex = index;
-    endIndex = index;
-  }
-
-  void onTapUpdate(int index) {
-    //endIndex = index;
-    setState(() {
-      updateSelection();
-    });
-  }
-
-  void onTapUp() {
-    setState(() {
-      updateSelection();
-    });
-  }
-
-  void updateSelection() {
-    if (startIndex != 0 && endIndex != 0) {
-      for (int i = startIndex; i <= endIndex; i++) {
-        _toggleSelection(i);
-      }
-    }
   }
 
   String formatToInterval(int secs) {
@@ -343,21 +317,20 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-      IconButton(
-        icon: const Icon(Icons.exit_to_app, color: Colors.white),
-        onPressed: () {
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            '/testList', // Название экрана, на который нужно перейти
-            (route) => false, // Удаляет все предыдущие экраны из стека
-          );
-        },
-      ),
-    ],
+          IconButton(
+            icon: const Icon(Icons.exit_to_app, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/testList', // Название экрана, на который нужно перейти
+                (route) => false, // Удаляет все предыдущие экраны из стека
+              );
+            },
+          ),
+        ],
         title: const Text(
           'Тест Мюнстерберга',
           style: TextStyle(color: Colors.white), // Белый цвет текста
-          
         ),
         backgroundColor: Color(0xFF373737),
         centerTitle: true,
@@ -381,9 +354,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
                 child: Wrap(
                   children: List.generate(characters.length, (index) {
                     return GestureDetector(
-                      onTapDown: (_) => onTapDown(index),
-                      onPanUpdate: (_) => onTapUpdate(index),
-                      onTapUp: (_) => onTapUp(),
+                      onTap: () => _toggleSelection(index),
                       child: Container(
                         padding: const EdgeInsets.all(8.0),
                         color: resIndexes.contains(index)
