@@ -418,7 +418,9 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
               onPressed: isButtonDisabled ? null : _dialog,
               child: const Text('Результаты'),
             ),
-
+            const SizedBox(
+              height: 10,
+            ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.grey[700], // Цвет кнопки
