@@ -22,11 +22,9 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
   List<int> selectedIndexes = [];
   List<int> resIndexes = [];
   List<String> dictionary = [
-    'ДОМ',
     'ГОРН',
     'ПОПКОРН',
     'КРАБ',
-    'РАБ',
     'БАБУШКА',
     'ИНФУЗОРИЯ',
     'БАСНЯ',
@@ -112,6 +110,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
   List<String> wordsToFind = [];
   bool isButtonDisabled = true;
   bool isOver = false;
+  bool firstTouch = true;
   int seconds = 0;
   int foundWords = 0;
   int startIndex = 0;
@@ -283,7 +282,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
       if (i < wordsToFind.length) {
         if (indices.contains(index) && !indices.contains(index + 1)) {
           indices = List.generate(wordsToFind.length - i,
-              (int k) => randomCharacter.nextInt(199 - index) + index);
+              (int k) => randomCharacter.nextInt(199 - index) + index + 1);
           return wordsToFind[i++];
         }
       }
@@ -294,28 +293,25 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
   }
 
   void onTapDown(int index) {
-    startIndex = index;
-    endIndex = index;
-  }
-
-  void onTapUpdate(int index) {
-    //endIndex = index;
-    setState(() {
-      updateSelection();
-    });
-  }
-
-  void onTapUp() {
-    setState(() {
-      updateSelection();
-    });
+    if (firstTouch) {
+      startIndex = index;
+      setState(() {
+        _toggleSelection(index);
+      });
+      firstTouch = false;
+    } else {
+      _toggleSelection(startIndex);
+      endIndex = index;
+      firstTouch = true;
+      setState(() {
+        updateSelection();
+      });
+    }
   }
 
   void updateSelection() {
-    if (startIndex != 0 && endIndex != 0) {
-      for (int i = startIndex; i <= endIndex; i++) {
-        _toggleSelection(i);
-      }
+    for (int i = startIndex; i <= endIndex; i++) {
+      _toggleSelection(i);
     }
   }
 
@@ -365,9 +361,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
                 child: Wrap(
                   children: List.generate(characters.length, (index) {
                     return GestureDetector(
-                      onTapDown: (_) => onTapDown(index),
-                      onPanUpdate: (_) => onTapUpdate(index),
-                      onTapUp: (_) => onTapUp(),
+                      onTap: () => onTapDown(index),
                       child: Container(
                         padding: const EdgeInsets.all(8.0),
                         color: resIndexes.contains(index)
