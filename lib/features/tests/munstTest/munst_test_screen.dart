@@ -342,9 +342,22 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+      IconButton(
+        icon: const Icon(Icons.exit_to_app, color: Colors.white),
+        onPressed: () {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/testList', // Название экрана, на который нужно перейти
+            (route) => false, // Удаляет все предыдущие экраны из стека
+          );
+        },
+      ),
+    ],
         title: const Text(
           'Тест Мюнстерберга',
           style: TextStyle(color: Colors.white), // Белый цвет текста
+          
         ),
         backgroundColor: Color(0xFF373737),
         centerTitle: true,
@@ -353,6 +366,9 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
         key: _formKey,
         child: Column(
           children: [
+            const SizedBox(
+              height: 10,
+            ),
             const Text('Выделите слова'),
             Text('Прошло $seconds секунд'),
             const SizedBox(

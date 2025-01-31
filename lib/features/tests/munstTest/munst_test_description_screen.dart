@@ -50,6 +50,7 @@ class _MunstTestDescriptionScreenState
                 child: Text(
                   'Описание теста:\n\n'
                   'Среди буквенного текста имеются слова. Ваша задача - просматривая строку за строкой, как можно быстрее найти эти слова и выделить их нажатием на каждую букву из найденного слова',
+
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,

@@ -9,8 +9,8 @@ import 'package:cognitive/features/tests/munstTest/munst_test_screen.dart';
 import 'package:cognitive/features/tests/munstTest/munst_test_description_screen.dart';
 import 'package:cognitive/features/tests/numberTest/number_test_description_screen.dart';
 import 'package:cognitive/features/tests/numberTest/number_test_screen.dart';
-import 'package:cognitive/features/tests/stroup_hard_test/stroup_hard_test_description_screen.dart';
-import 'package:cognitive/features/tests/stroup_hard_test/stroup_hard_test_screen.dart';
+import 'package:cognitive/features/tests/compometry_test/comp_description_screen.dart';
+import 'package:cognitive/features/tests/compometry_test/comp_screen.dart';
 import 'package:cognitive/features/tests/strupTest/strup_test_description_screen.dart';
 import 'package:cognitive/features/tests/strupTest/strup_test_screen.dart';
 import 'package:cognitive/features/tests/tag_test/tag_test_screen.dart';
@@ -35,7 +35,7 @@ final routes = {
         '/tagTest': (context) => TagTestScreen(),
         '/testList/strupTestDescription': (context) => const StrupTestDescriptionScreen(),
         '/strupTest': (context) => StrupTestScreen(),
-        '/testList/stroupHardTestDescription': (context) => ColorBlindTestDescriptionScreen(),
-        '/stroupHardTest': (context) => ColorBlindTestScreen(),
+        '/testList/compTestDescription': (context) => CampimetryDescriptionScreen(),
+        '/campimetryTest': (context) => CampimetryScreen(),
         '/surveyScreen' : (context) => SurveyScreen(),
       };
