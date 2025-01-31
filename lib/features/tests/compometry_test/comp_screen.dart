@@ -7,6 +7,8 @@ class CampimetryScreen extends StatefulWidget {
 }
 
 class _CampimetryScreenState extends State<CampimetryScreen> with TickerProviderStateMixin {
+  
+  int testId = 6;
   // Параметры для первого этапа
   int _tapCountStage1 = 0;
   Color _silhouetteColorStage1 = Colors.grey;
