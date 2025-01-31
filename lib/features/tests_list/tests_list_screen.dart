@@ -53,7 +53,7 @@ class _TestsListScreenState extends State<TestsListScreen> {
     }
     if (testIndex == 5) {
       Navigator.of(context).pushNamed(
-        '/testList/stroupHardTestDescription', 
+        '/testList/compTestDescription', 
       );
     }
   }
