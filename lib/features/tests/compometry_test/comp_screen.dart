@@ -247,7 +247,26 @@ class _CampimetryScreenState extends State<CampimetryScreen> with TickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Компьютерная кампиметрия')),
+      appBar: AppBar(
+                        actions: [
+      IconButton(
+        icon: const Icon(Icons.exit_to_app, color: Colors.white),
+        onPressed: () {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/testList', // Название экрана, на который нужно перейти
+            (route) => false, // Удаляет все предыдущие экраны из стека
+          );
+        },
+      ),
+    ],
+        title: const Text(
+          'Компьютерная кампиметрия',
+          style: TextStyle(color: Colors.white), // Белый цвет текста
+        ),
+        backgroundColor: Color(0xFF373737), 
+        centerTitle: true,
+      ),
       body: Container(
         color: _backgroundColor,
         child: Center(
@@ -279,16 +298,24 @@ class _CampimetryScreenState extends State<CampimetryScreen> with TickerProvider
                   children: [
                     Text('Нажатий: $_tapCountStage1'),
 
-                    ElevatedButton(
-                      onPressed: () {
+              ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[700], // Цвет кнопки
+                  foregroundColor: Colors.white, // Цвет текста кнопки
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // Скругленные углы
+                  ),
+                ),
+              onPressed: () {
                         if (_startTimeStage1 == null) {
                           _startTimeStage1 = DateTime.now();
                            _timerControllerStage1.forward(); // Запускаем таймер первого этапа
                         }
                         _addShadeStage1();
                       },
-                      child: Text('Добавить оттенок'),
-                    ),
+              child: const Text('Добавить оттенок'),
+            ),
+                     // 
                     SizedBox(height: 20),
                     Text('Выберите силуэт:'),
                     Row(
@@ -310,10 +337,19 @@ class _CampimetryScreenState extends State<CampimetryScreen> with TickerProvider
                   children: [
                     Text('Нажатий: $_tapCountStage2'),
 
-                    ElevatedButton(
-                      onPressed: _subtractShadeStage2,
-                      child: Text('Убавить оттенок'),
-                    ),
+                ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[700], // Цвет кнопки
+                  foregroundColor: Colors.white, // Цвет текста кнопки
+                 //minimumSize: const Size(200, 50), // Размер кнопки
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // Скругленные углы
+                  ),
+                ),
+                onPressed: _subtractShadeStage2,
+                child: const Text('Убавить оттенок'),
+              ),
+
                     SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: _completeStage2,

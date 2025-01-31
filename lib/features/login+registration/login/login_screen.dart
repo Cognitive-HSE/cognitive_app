@@ -198,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextSpan(
                     text: 'Зарегистрироваться',
                     style: const TextStyle(
-                      color: Color.fromARGB(255, 117, 57, 208),
+                      color: Color.fromARGB(255, 205, 140, 227),
                       fontWeight: FontWeight.bold,
                     ),
                     recognizer: TapGestureRecognizer()

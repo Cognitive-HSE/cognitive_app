@@ -28,7 +28,7 @@ class _StrupTestDescriptionScreenState extends State<StrupTestDescriptionScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Тест "Струпа"',
+          'Тест Струпа',
           style: TextStyle(color: Colors.white), // Белый цвет текста
         ),
         backgroundColor: Color(0xFF373737), 
