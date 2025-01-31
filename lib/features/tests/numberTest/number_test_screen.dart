@@ -29,9 +29,11 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
   void initState() {
     super.initState();
     generateNumbers();
-    setState(() {
-      allAnswers = finishNumberCount - startNumberCount + 1;
-    });
+        if (mounted) {
+      setState(() {
+        allAnswers = finishNumberCount - startNumberCount + 1;
+      });
+    }
   }
 
   void generateNumbers() {
@@ -43,9 +45,11 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
     });
 
     Timer(Duration(seconds: 3), () {
+        if (mounted) {
       setState(() {
         showNumbers = false;
       });
+    }
     });
   }
 
@@ -167,6 +171,18 @@ void _showDatabaseError(String errorMessage) {
 
     return Scaffold(
       appBar: AppBar(
+                actions: [
+      IconButton(
+        icon: const Icon(Icons.exit_to_app, color: Colors.white),
+        onPressed: () {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/testList', // Название экрана, на который нужно перейти
+            (route) => false, // Удаляет все предыдущие экраны из стека
+          );
+        },
+      ),
+    ],
         title: const Text(
           'Тест на запоминание чисел',
           style: TextStyle(color: Colors.white),

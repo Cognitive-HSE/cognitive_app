@@ -227,6 +227,18 @@ void _showDatabaseError(String errorMessage) {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+                        actions: [
+      IconButton(
+        icon: const Icon(Icons.exit_to_app, color: Colors.white),
+        onPressed: () {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/testList', // Название экрана, на который нужно перейти
+            (route) => false, // Удаляет все предыдущие экраны из стека
+          );
+        },
+      ),
+    ],
         title: const Text(
           'Тест Пятнашки',
           style: TextStyle(color: Colors.white), // Белый цвет текста

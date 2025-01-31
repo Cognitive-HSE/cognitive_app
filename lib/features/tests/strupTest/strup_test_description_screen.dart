@@ -28,7 +28,7 @@ class _StrupTestDescriptionScreenState extends State<StrupTestDescriptionScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Тест "Струпа"',
+          'Тест Струпа',
           style: TextStyle(color: Colors.white), // Белый цвет текста
         ),
         backgroundColor: Color(0xFF373737), 
@@ -49,7 +49,7 @@ class _StrupTestDescriptionScreenState extends State<StrupTestDescriptionScreen>
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  '''Описание теста:\nТест Струпа:\nТест проходит в 3 этапа. На 1 этапе вам предстоит выбрать показанный цвет
+                  '''Описание теста:\n\nТест проходит в 3 этапа. На 1 этапе вам предстоит выбрать показанный цвет
                   ''',
                   textAlign: TextAlign.center,
                   style: TextStyle(

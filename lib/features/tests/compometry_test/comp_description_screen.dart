@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 
-class ColorBlindTestDescriptionScreen extends StatefulWidget {
-  const ColorBlindTestDescriptionScreen({super.key});
+class CampimetryDescriptionScreen extends StatefulWidget {
+  const CampimetryDescriptionScreen({super.key});
 
   @override
-  State<ColorBlindTestDescriptionScreen> createState() => _ColorBlindTestDescriptionScreenState();
+  State<CampimetryDescriptionScreen> createState() => _CampimetryDescriptionScreenState();
 }
 
-class _ColorBlindTestDescriptionScreenState extends State<ColorBlindTestDescriptionScreen> {
+class _CampimetryDescriptionScreenState extends State<CampimetryDescriptionScreen> {
 
   @override
   void dispose() {
     super.dispose();
   }
 
-    void _goToTest() {
+  void _goToTest() {
     debugPrint("User are going to finish test");
-        Navigator.pushNamedAndRemoveUntil(
-      context,
-      '/stroupHardTest',
-      (route) => false
+    Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/campimetryTest',
+            (route) => false
     );
   }
 
@@ -28,7 +28,7 @@ class _ColorBlindTestDescriptionScreenState extends State<ColorBlindTestDescript
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Тест Струпа усложненный',
+          'Компьютерная кампиметрия',
           style: TextStyle(color: Colors.white), // Белый цвет текста
         ),
         backgroundColor: Color(0xFF373737), 
@@ -49,7 +49,8 @@ class _ColorBlindTestDescriptionScreenState extends State<ColorBlindTestDescript
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  'Описание теста: \nНа экране появится животное, цвет которого будет близок к фону. Нажимайте кнопку "Еще раз", пока картинка не станет почти невидимой, и когда решите, что больше не видите, нажимайте "Не вижу".',
+                  '''Описание теста: \nНа первом этапе нужно нажимать кнопку "Добавить оттенок" пока силуэт не станет полностью видимым. После этого нужно выбрать силуэт. На втором этапе нужно нажимать кнопку "Убавить оттенок", пока силуэт не станет полностью невидимым, и когда решите, что больше не видите, нажимайте "Не вижу".
+                  ''',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
