@@ -211,26 +211,33 @@ class _CampimetryScreenState extends State<CampimetryScreen> with TickerProvider
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Результаты'),
+          backgroundColor: Color(0xFF373737), // Фон диалога
+          title: const Text(
+              'Результаты',
+              style: TextStyle(color: Colors.white), // Цвет текста заголовка
+          ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 if (_stage1Completed)
-                  Text('Этап 1:'),
-                Text('Нажатий: $_tapCountStage1'),
-                Text('Время: ${_durationStage1?.inSeconds ?? 0} секунд'),
-                Text('Силуэт: ${_silhouetteNames[_selectedSilhouette] ?? _selectedSilhouette}'),
+                   const Text('Этап 1:', style: TextStyle(color: Colors.white),),
+                Text('Нажатий: $_tapCountStage1', style: const TextStyle(color: Colors.white)),
+                Text('Время: ${_durationStage1?.inSeconds ?? 0} секунд', style: const TextStyle(color: Colors.white)),
+                Text('Силуэт: ${_silhouetteNames[_selectedSilhouette] ?? _selectedSilhouette}', style: const TextStyle(color: Colors.white)),
 
                 if (_stage2Started)
-                  Text('\nЭтап 2:'),
-                Text('Время: ${_durationStage2?.inSeconds ?? 0} секунд'),
-                 Text('Нажатий: $_tapCountStage2'),
+                   const Text('\nЭтап 2:', style: TextStyle(color: Colors.white)),
+                Text('Время: ${_durationStage2?.inSeconds ?? 0} секунд', style: const TextStyle(color: Colors.white)),
+                Text('Нажатий: $_tapCountStage2', style: const TextStyle(color: Colors.white)),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Вернуться к тестам'),
+               style: TextButton.styleFrom(
+                foregroundColor: Colors.white, // Цвет текста кнопки
+              ),
+              child: const Text('Вернуться к тестам', style: TextStyle(color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
                 _goToTestList();
