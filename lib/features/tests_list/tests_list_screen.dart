@@ -15,7 +15,7 @@ class _TestsListScreenState extends State<TestsListScreen> {
     2: "Тест \"Запоминание чисел\"",
     3: "Тест \"Пятнашки\"",
     4: "Тест Струпа", 
-    5: "Тест Струпа усложненный", 
+    5: "Тест Кампиметрия", 
   };
 
   @override
