@@ -1,5 +1,10 @@
+import 'package:cognitive/cognitive_app.dart';
+import 'package:cognitive/features/database_config.dart';
+import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+
+import 'package:postgres/postgres.dart';
 
 class CampimetryScreen extends StatefulWidget {
   @override
@@ -7,6 +12,7 @@ class CampimetryScreen extends StatefulWidget {
 }
 
 class _CampimetryScreenState extends State<CampimetryScreen> with TickerProviderStateMixin {
+  final testId = 6;
   // Параметры для первого этапа
   int _tapCountStage1 = 0;
   Color _silhouetteColorStage1 = Colors.grey;
@@ -28,6 +34,7 @@ class _CampimetryScreenState extends State<CampimetryScreen> with TickerProvider
   late AnimationController _timerControllerStage2;
 
   // Общие параметры
+  bool isCorrect = false;
   final double _silhouetteSize = 200.0;
   final List<String> _availableSilhouettes = ['cat', 'dog', 'bird'];
   final Map<String, String> _silhouetteNames = {
@@ -56,12 +63,16 @@ class _CampimetryScreenState extends State<CampimetryScreen> with TickerProvider
     _timerControllerStage1 = AnimationController(
       duration: Duration(hours: 1),
       vsync: this,
-    );
+    )..addListener(() {
+      setState(() {}); // Обновляем UI при изменении таймера
+    });
 
     _timerControllerStage2 = AnimationController(
       duration: Duration(hours: 1),
       vsync: this,
-    );
+    )..addListener(() {
+      setState(() {}); // Обновляем UI при изменении таймера
+    });
   }
 
   @override
@@ -105,7 +116,7 @@ class _CampimetryScreenState extends State<CampimetryScreen> with TickerProvider
 
   // Метод для отображения диалога с результатами первого этапа
     Future<void> _showStage1ResultDialog(String selected) async {
-    bool isCorrect = selected == _currentSilhouette;
+    isCorrect = selected == _currentSilhouette;
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -210,6 +221,7 @@ class _CampimetryScreenState extends State<CampimetryScreen> with TickerProvider
         _deviation = _tapCountStage2 - _correctTapCountStage2;
       });
       _timerControllerStage2.stop();
+      resultsToDB();
       _showResultsDialog(context);
     }
   }
@@ -286,27 +298,104 @@ class _CampimetryScreenState extends State<CampimetryScreen> with TickerProvider
   void _goToTestList() {
     Navigator.pushNamedAndRemoveUntil(
       context,
-      '/',
+      '/testList',
           (route) => false,
     );
   }
 
+  int getCorrectAnswers() {
+    double magicNumber = 0.39; // подобрал число чтобы модуль получался +- ноль при правильном ответе
+    int absAnswers = (_tapCountStage1 - _tapCountStage2 * magicNumber).abs().round();
+    if (isCorrect) {
+      return absAnswers;
+    } else {
+      return -absAnswers;
+    }
+  }
+
+  Future<bool> resultsToDB() async {
+    try {
+      final conn = await Connection.open(
+        Endpoint(
+          host: DatabaseConfig.host,
+          port: DatabaseConfig.port,
+          database: DatabaseConfig.database,
+          username: DatabaseConfig.username,
+          password: DatabaseConfig.password,
+        ),
+        settings: ConnectionSettings(sslMode: SslMode.disable),
+      );
+
+      debugPrint('Подключение к бд из resultsToDB успешно');
+
+      final userId = AuthManager.getUserId();
+      final allAnswers = _tapCountStage1 + _tapCountStage2;
+      final correctAnsw = getCorrectAnswers();
+
+      //request processing
+      final sendResults = await conn.execute(
+        Sql.named('''
+    SELECT cognitive."f\$test_results__write"(
+    vp_user_id => @vp_user_id, 
+    vp_test_id => @vp_test_id,
+    vp_number_all_answers => @vp_number_all_answers,
+    vp_number_correct_answers => @vp_number_correct_answers,
+    vp_complete_time => @vp_complete_time
+    )'''),
+        parameters: {
+          'vp_user_id': userId,
+          'vp_test_id': testId,
+          'vp_number_all_answers': allAnswers,
+          'vp_number_correct_answers': correctAnsw,
+          'vp_complete_time': null,
+        },
+      );
+      debugPrint('$sendResults');
+      final result = sendResults.isEmpty == true;
+
+      conn.close();
+      return result;
+    } catch (e) {
+      debugPrint('Ошибка подключения к бд из resultsToDB: $e');
+      _showDatabaseError('Не удалось сохранить результаты теста');
+      return false;
+    }
+  }
+
+  void _showDatabaseError(String errorMessage) {
+    scaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(
+          errorMessage,
+          style: const TextStyle(fontSize: 16),
+        ),
+        backgroundColor: Color.fromARGB(255, 227, 49, 37),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-         title: const Text(
-          'Тест "Кампиметрия"',
+            appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/testList', // Название экрана, на который нужно перейти
+                (route) => false, // Удаляет все предыдущие экраны из стека
+              );
+            },
+          ),
+        ],
+        title: const Text(
+          'Компьютерная кампиметрия',
           style: TextStyle(color: Colors.white), // Белый цвет текста
         ),
         backgroundColor: Color(0xFF373737),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
       ),
       body: Container(
         color: _backgroundColor,
