@@ -63,12 +63,16 @@ class _CampimetryScreenState extends State<CampimetryScreen> with TickerProvider
     _timerControllerStage1 = AnimationController(
       duration: Duration(hours: 1),
       vsync: this,
-    );
+    )..addListener(() {
+      setState(() {}); // Обновляем UI при изменении таймера
+    });
 
     _timerControllerStage2 = AnimationController(
       duration: Duration(hours: 1),
       vsync: this,
-    );
+    )..addListener(() {
+      setState(() {}); // Обновляем UI при изменении таймера
+    });
   }
 
   @override
