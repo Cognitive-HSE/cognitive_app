@@ -104,24 +104,34 @@ class _CampimetryScreenState extends State<CampimetryScreen> with TickerProvider
   }
 
   // Метод для отображения диалога с результатами первого этапа
-  Future<void> _showStage1ResultDialog(String selected) async {
+    Future<void> _showStage1ResultDialog(String selected) async {
     bool isCorrect = selected == _currentSilhouette;
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(isCorrect ? 'Отлично!' : 'Увы!'),
+          backgroundColor: Color(0xFF373737), // Фон диалога
+          title: Text(
+            isCorrect ? 'Отлично!' : 'Увы!',
+            style: const TextStyle(color: Colors.white), // Цвет текста заголовка
+          ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(isCorrect ? 'Вы верно распознали животное.' : 'Ваш выбор неверный.'),
+                Text(
+                  isCorrect ? 'Вы верно распознали животное.' : 'Ваш выбор неверный.',
+                  style: const TextStyle(color: Colors.white), // Цвет текста контента
+                ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Далее'),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white, // Цвет текста кнопки
+              ),
+              child: const Text('Далее', style: TextStyle(color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
                 _startStage2();
@@ -131,7 +141,7 @@ class _CampimetryScreenState extends State<CampimetryScreen> with TickerProvider
         );
       },
     );
-  }// Запуск второго этапа
+  }
   void _startStage2() {
     if (!_stage2Started) {
       setState(() {
