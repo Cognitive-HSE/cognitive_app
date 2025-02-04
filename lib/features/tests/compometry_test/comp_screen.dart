@@ -294,19 +294,25 @@ class _CampimetryScreenState extends State<CampimetryScreen> with TickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-         title: const Text(
+            appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/testList', // Название экрана, на который нужно перейти
+                (route) => false, // Удаляет все предыдущие экраны из стека
+              );
+            },
+          ),
+        ],
+        title: const Text(
           'Тест "Кампиметрия"',
           style: TextStyle(color: Colors.white), // Белый цвет текста
         ),
         backgroundColor: Color(0xFF373737),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
       ),
       body: Container(
         color: _backgroundColor,
