@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login() async {
-
+    if (!mounted) return;
     //block button
     setState(() {
       isButtonDisabled = true;
@@ -44,9 +44,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     // Сброс блокировки кнопки через 3 секунды
     Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
       setState(() {
         isButtonDisabled = false;
       });
+      }
     });
 
     final name = _nameController.text;
@@ -70,11 +72,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
       } else {
         debugPrint("Не удалось войти");
-        showSnackBar("Не удалось войти");
+        if (mounted) showSnackBar("Не удалось войти");
       }
     } else {
         debugPrint("Заполнены не все поля");
-        showSnackBar("Заполнены не все поля");
+        if (mounted) showSnackBar("Заполнены не все поля");
     }
   }
 
