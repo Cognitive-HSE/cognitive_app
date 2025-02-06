@@ -20,11 +20,13 @@ class _SuccessLoginScreenState extends State<SuccessLoginScreen> {
 
   void _goToTests() {
     debugPrint("User are going to tests");
+    if (mounted) {
     Navigator.pushNamedAndRemoveUntil(
       context, 
       '/testList', 
       (route) => false
     );
+    }
   }
 
   @override
