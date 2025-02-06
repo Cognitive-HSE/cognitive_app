@@ -50,7 +50,7 @@ class _NumberTestDescriptionScreenState extends State<NumberTestDescriptionScree
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
                   'Описание теста:\n\n'
-                  'Вам будут показаны числа. Запомните их и впишите в указанном порядке в соответствующие поля',
+                  'Вам будут показаны числа. Запомните их и запишите в указанном порядке',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
