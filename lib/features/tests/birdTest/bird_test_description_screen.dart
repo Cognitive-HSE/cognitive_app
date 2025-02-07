@@ -4,11 +4,11 @@ class BirdTestDescriptionScreen extends StatefulWidget {
   const BirdTestDescriptionScreen({super.key});
 
   @override
-  State<BirdTestDescriptionScreen> createState() => _BirdTestDescriptionScreenState();
+  State<BirdTestDescriptionScreen> createState() =>
+      _BirdTestDescriptionScreenState();
 }
 
 class _BirdTestDescriptionScreenState extends State<BirdTestDescriptionScreen> {
-
   int testIndex = 0;
 
   @override
@@ -18,13 +18,10 @@ class _BirdTestDescriptionScreenState extends State<BirdTestDescriptionScreen> {
 
   void _goToFinishTest() {
     debugPrint("User are going to finish test");
-        Navigator.pushNamedAndRemoveUntil(
-      context, 
-      '/birdTest', 
-      (route) => false
-    );
+    Navigator.pushNamedAndRemoveUntil(context, '/birdTest', (route) => false);
   }
-@override
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -32,7 +29,7 @@ class _BirdTestDescriptionScreenState extends State<BirdTestDescriptionScreen> {
           'Тест "Ласточка"',
           style: TextStyle(color: Colors.white), // Белый цвет текста
         ),
-        backgroundColor: Color(0xFF373737), 
+        backgroundColor: Color(0xFF373737),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
