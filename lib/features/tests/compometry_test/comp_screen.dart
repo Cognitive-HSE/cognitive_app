@@ -3,6 +3,7 @@ import 'package:cognitive/features/database_config.dart';
 import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'counter.dart';
 
 import 'package:postgres/postgres.dart';
 
@@ -84,7 +85,7 @@ class _CampimetryScreenState extends State<CampimetryScreen>
   // Метод для генерации случайного цвета
   Color _generateRandomColor() {
     final Random random = Random();
-        return _availableColors[random.nextInt(_availableColors.length)];
+    return _availableColors[random.nextInt(_availableColors.length)];
   }
 
   // Метод для увеличения оттенка силуэта (первый этап)
@@ -124,7 +125,8 @@ class _CampimetryScreenState extends State<CampimetryScreen>
           backgroundColor: Color(0xFF373737), // Фон диалога
           title: Text(
             isCorrect ? 'Отлично!' : 'Увы!',
-            style: const TextStyle(color: Colors.white), // Цвет текста заголовка
+            style:
+                const TextStyle(color: Colors.white), // Цвет текста заголовка
           ),
           content: SingleChildScrollView(
             child: ListBody(
@@ -156,7 +158,8 @@ class _CampimetryScreenState extends State<CampimetryScreen>
   }
 
   void _startStage2() {
-    if (!_stage2Started) {      setState(() {
+    if (!_stage2Started) {
+      setState(() {
         _stage2Started = true;
         _correctTapCountStage2 = _tapCountStage1 + Random().nextInt(5) + 3;
         _expectedTapsStage2 =
@@ -167,8 +170,7 @@ class _CampimetryScreenState extends State<CampimetryScreen>
         _deviation = 0;
         _colorsAreSame = false;
         _timerControllerStage2.reset();
-        _timerControllerStage2
-            .forward(); // Запускаем таймер второго этапа
+        _timerControllerStage2.forward(); // Запускаем таймер второго этапа
       });
     }
   }
@@ -176,9 +178,14 @@ class _CampimetryScreenState extends State<CampimetryScreen>
   // Метод для вычисления начального цвета силуэта на втором этапе
   Color _calculateSilhouetteColorStage2() {
     return Color.fromRGBO(
-      max(0, min(255, _silhouetteColorStage1.red + (_correctTapCountStage2) * 2)),
-      max(0, min(255, _silhouetteColorStage1.green + (_correctTapCountStage2) * 2)),
-      max(0, min(255, _silhouetteColorStage1.blue + (_correctTapCountStage2) * 2)),
+      max(0,
+          min(255, _silhouetteColorStage1.red + (_correctTapCountStage2) * 2)),
+      max(
+          0,
+          min(255,
+              _silhouetteColorStage1.green + (_correctTapCountStage2) * 2)),
+      max(0,
+          min(255, _silhouetteColorStage1.blue + (_correctTapCountStage2) * 2)),
       1.0,
     );
   }
@@ -274,6 +281,7 @@ class _CampimetryScreenState extends State<CampimetryScreen>
               child: const Text('Вернуться к тестам',
                   style: TextStyle(color: Colors.white)),
               onPressed: () {
+                retryCounter = 1;
                 Navigator.of(context).pop();
                 _goToTestList();
               },
@@ -282,9 +290,10 @@ class _CampimetryScreenState extends State<CampimetryScreen>
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white, // Цвет текста кнопки
               ),
-              child:
-                  const Text('Повторить', style: TextStyle(color: Colors.white)),
+              child: const Text('Повторить',
+                  style: TextStyle(color: Colors.white)),
               onPressed: () {
+                retryCounter++;
                 Navigator.of(context).pop();
                 _restartTest();
               },
@@ -306,7 +315,8 @@ class _CampimetryScreenState extends State<CampimetryScreen>
       _backgroundColor = _generateRandomColor();
 
       // **NEW**: Choose a new silhouette
-      _currentSilhouette = _availableSilhouettes[Random().nextInt(_availableSilhouettes.length)];
+      _currentSilhouette =
+          _availableSilhouettes[Random().nextInt(_availableSilhouettes.length)];
       _silhouetteColorStage1 =
           _backgroundColor; // Reset silhouette color to background color
 
@@ -323,12 +333,10 @@ class _CampimetryScreenState extends State<CampimetryScreen>
       _deviation = 0;
       _stage2Started = false;
       _colorsAreSame = false;
-
     });
     _timerControllerStage1.reset();
     _timerControllerStage2.reset();
   }
-
 
   void _goToTestList() {
     Navigator.pushNamedAndRemoveUntil(
@@ -339,10 +347,10 @@ class _CampimetryScreenState extends State<CampimetryScreen>
   }
 
   int getCorrectAnswers() {
-    double magicNumber = 0.39; // подобрал число чтобы модуль получался +- ноль при правильном ответе
-    int absAnswers = (_tapCountStage1 - _tapCountStage2 * magicNumber)
-        .abs()
-        .round();
+    double magicNumber =
+        0.39; // подобрал число чтобы модуль получался +- ноль при правильном ответе
+    int absAnswers =
+        (_tapCountStage1 - _tapCountStage2 * magicNumber).abs().round();
     if (isCorrect) {
       return absAnswers;
     } else {
@@ -440,13 +448,14 @@ class _CampimetryScreenState extends State<CampimetryScreen>
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-children: [
+            children: [
               Container(
                 width: _silhouetteSize,
                 height: _silhouetteSize,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage('assets/CompTest/$_currentSilhouette.png'),
+                      image:
+                          AssetImage('assets/CompTest/$_currentSilhouette.png'),
                       fit: BoxFit.fill,
                       colorFilter: ColorFilter.mode(
                           _stage2Started
@@ -472,7 +481,7 @@ children: [
               if (!_stage1Completed)
                 Column(
                   children: [
-                    Text('Нажатий:$_tapCountStage1',
+                    Text('Нажатий:$_tapCountStage1   Попытка №$retryCounter',
                         style: const TextStyle(color: Colors.white)),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -480,7 +489,8 @@ children: [
                         foregroundColor: Colors.white, // Цвет текста кнопки
                         minimumSize: const Size(200, 50), // Размер кнопки
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10), // Скругленные углы
+                          borderRadius:
+                              BorderRadius.circular(10), // Скругленные углы
                         ),
                       ),
                       onPressed: () {
@@ -504,9 +514,11 @@ children: [
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.grey[700], // Цвет кнопки
-                              foregroundColor: Colors.white, // Цвет текста кнопки
+                              foregroundColor:
+                                  Colors.white, // Цвет текста кнопки
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10), // Скругленные углы
+                                borderRadius: BorderRadius.circular(
+                                    10), // Скругленные углы
                               ),
                             ),
                             onPressed: () => _selectSilhouette(silhouette),
@@ -520,15 +532,16 @@ children: [
               if (_stage2Started)
                 Column(
                   children: [
-                    Text('Нажатий: $_tapCountStage2',
-style: const TextStyle(color: Colors.white)),
+                    Text('Нажатий: $_tapCountStage2  Попытка №$retryCounter',
+                        style: const TextStyle(color: Colors.white)),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[700], // Цвет кнопки
                         foregroundColor: Colors.white, // Цвет текста кнопки
                         minimumSize: const Size(200, 50), // Размер кнопки
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10), // Скругленные углы
+                          borderRadius:
+                              BorderRadius.circular(10), // Скругленные углы
                         ),
                       ),
                       onPressed: _subtractShadeStage2,
@@ -541,7 +554,8 @@ style: const TextStyle(color: Colors.white)),
                         foregroundColor: Colors.white, // Цвет текста кнопки
                         minimumSize: const Size(200, 50), // Размер кнопки
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10), // Скругленные углы
+                          borderRadius:
+                              BorderRadius.circular(10), // Скругленные углы
                         ),
                       ),
                       onPressed: () {

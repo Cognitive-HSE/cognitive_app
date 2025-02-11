@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
+import 'counter.dart';
 
 class CampimetryDescriptionScreen extends StatefulWidget {
   const CampimetryDescriptionScreen({super.key});
 
   @override
-  State<CampimetryDescriptionScreen> createState() => _CampimetryDescriptionScreenState();
+  State<CampimetryDescriptionScreen> createState() =>
+      _CampimetryDescriptionScreenState();
 }
 
-class _CampimetryDescriptionScreenState extends State<CampimetryDescriptionScreen> {
-
+class _CampimetryDescriptionScreenState
+    extends State<CampimetryDescriptionScreen> {
   @override
   void dispose() {
     super.dispose();
   }
 
   void _goToTest() {
+    retryCounter = 1;
     debugPrint("User are going to finish test");
     Navigator.pushNamedAndRemoveUntil(
-        context,
-        '/campimetryTest',
-            (route) => false
-    );
+        context, '/campimetryTest', (route) => false);
   }
 
   @override
@@ -31,7 +31,7 @@ class _CampimetryDescriptionScreenState extends State<CampimetryDescriptionScree
           'Компьютерная кампиметрия',
           style: TextStyle(color: Colors.white), // Белый цвет текста
         ),
-        backgroundColor: Color(0xFF373737), 
+        backgroundColor: Color(0xFF373737),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -49,7 +49,11 @@ class _CampimetryDescriptionScreenState extends State<CampimetryDescriptionScree
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  '''Описание теста: \nНа первом этапе нужно нажимать кнопку "Добавить оттенок" пока силуэт не станет полностью видимым. После этого нужно выбрать силуэт. На втором этапе нужно нажимать кнопку "Убавить оттенок", пока силуэт не станет полностью невидимым, и когда решите, что больше не видите, нажимайте "Не вижу".
+                  '''Описание теста: \nНа первом этапе нужно нажимать кнопку "Добавить оттенок" пока силуэт не 
+                  станет полностью видимым. После этого нужно выбрать силуэт. На втором этапе нужно нажимать 
+                  кнопку "Убавить оттенок", пока силуэт не станет полностью невидимым, и когда решите, 
+                  что больше не видите, нажимайте "Не вижу". Для Корректного результата необходимо пройти тест
+                   \nКАК МИНИМУМ 7 РАЗ.\n Попытка №1
                   ''',
                   textAlign: TextAlign.center,
                   style: TextStyle(

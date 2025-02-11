@@ -4,6 +4,7 @@ import 'package:cognitive/features/login+registration/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
+import 'dictionary.dart';
 
 import 'package:postgres/postgres.dart';
 
@@ -21,94 +22,6 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
   List<String> characters = [];
   List<int> selectedIndexes = [];
   List<int> resIndexes = [];
-  List<String> dictionary = [
-    'ДОМ',
-    'ГОРН',
-    'ПОПКОРН',
-    'КРАБ',
-    'РАБ',
-    'БАБУШКА',
-    'ИНФУЗОРИЯ',
-    'БАСНЯ',
-    'БАЯН',
-    'ВАХТА',
-    'ГУСЬ',
-    'ДЕНЬ',
-    'ЗАКАТ',
-    'ИНДЕЙКА',
-    'ЛИЛИЯ',
-    'САПЕР',
-    'ОЗЕРО',
-    'ЗИМА',
-    'ПАДЕЖ',
-    'ПОЛЕТ',
-    'ПУЛЯ',
-    'ПУТЬ',
-    'РУЖЬЕ',
-    'РЕМЕСЛО',
-    'УЛИТКА',
-    'ХЛЕБ',
-    'ЦАРЬ',
-    'ЦЕВЬЕ',
-    'ХАМАМ',
-    'ПЛАТЬЕ',
-    'ПОЛОТЕНЦЕ',
-    'СОЛНЦЕ',
-    'ОДЕЯЛО',
-    'ОБУВЬ',
-    'ПОДОШВА',
-    'ОДЕЖДА',
-    'ЗАЯЦ',
-    'СИРЕНЬ',
-    'СТАНЦИЯ',
-    'БЕГЛЕЦ',
-    'АЗАРТ',
-    'БОРОДА',
-    'ЧУЧЕЛО',
-    'БОГАТСТВО',
-    'ОДЕКОЛОН',
-    'БАЗАР',
-    'РАССУДОК',
-    'ГРЯЗЬ',
-    'ОБЛАКО',
-    'ЗАГАДКА',
-    'ЗАДАЧА',
-    'ЦЕЛЬ',
-    'ПУТЬ',
-    'СОЗВЕЗДИЕ',
-    'ОБЛИК',
-    'ЗНАК',
-    'КОНФИГУРАЦИЯ',
-    'ПУСТОТА',
-    'ЗАМКНУТОСТЬ',
-    'СИНГУЛЯРНОСТЬ',
-    'ОБРЫВ',
-    'ОГРАНИЧЕНИЕ',
-    'УГРОЗА',
-    'ОБЩЕСТВО',
-    'РИНГ',
-    'КЛУБ',
-    'БОЕЦ',
-    'КАРАТЭ',
-    'ОБЕЗЬЯНА',
-    'СОВЕСТЬ',
-    'СЛОВО',
-    'ЧЕСТЬ',
-    'ВРЕМЯ',
-    'СКОРОСТЬ',
-    'МАНЕВР',
-    'ОБГОН',
-    'ПОВОРОТ',
-    'ПРИБЫЛЬ',
-    'УБЫТОК',
-    'НЕДОСТАЧА',
-    'УЧЕТ',
-    'ЗАМЕТКА',
-    'ПОЛОСТЬ',
-    'ДЫРА',
-    'БОБЕР',
-    'СОВА'
-  ]; // Список слов, которые нужно найти
   List<String> wordsToFind = [];
   bool isButtonDisabled = true;
   bool isOver = false;
@@ -283,7 +196,7 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
       if (i < wordsToFind.length) {
         if (indices.contains(index) && !indices.contains(index + 1)) {
           indices = List.generate(wordsToFind.length - i,
-              (int k) => randomCharacter.nextInt(199 - index) + index + 1);
+              (int k) => randomCharacter.nextInt(199 - index) + index + 2);
           return wordsToFind[i++];
         }
       }
