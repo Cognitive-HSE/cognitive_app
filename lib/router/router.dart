@@ -1,3 +1,5 @@
+import 'package:cognitive/features/no_internet_screen.dart';
+import 'package:cognitive/features/app_version/update_app_screen.dart';
 import 'package:cognitive/features/initial_screen.dart';
 import 'package:cognitive/features/login+registration/login/login_screen.dart';
 import 'package:cognitive/features/login+registration/login/success_login_screen.dart';
@@ -38,4 +40,6 @@ final routes = {
         '/testList/compTestDescription': (context) => CampimetryDescriptionScreen(),
         '/campimetryTest': (context) => CampimetryScreen(),
         '/surveyScreen' : (context) => SurveyScreen(),
+        '/updateAppScreen': (context) => UpdateAppScreen(),
+        '/noInternetScreen': (context) => const NoInternetScreen()
       };
