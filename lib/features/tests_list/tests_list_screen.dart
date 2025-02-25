@@ -58,6 +58,49 @@ class _TestsListScreenState extends State<TestsListScreen> {
     }
   }
 
+  void _exitWarning1() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min, // Чтобы колонка не занимала всё пространство
+          children: [
+           // SizedBox(height: 10), // Отступ между текстами
+            Text("Запомните свой логин и пароль, приложение не сохраняет эти данные. При повторном входе вам придется вводить логин и пароль заново", 
+              style: TextStyle(fontSize: 16)),
+          ],
+        ),
+        actions: [
+        Center( // Центрируем кнопку
+          child: TextButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey[700], // Цвет кнопки
+              foregroundColor: Colors.white, // Цвет текста
+              minimumSize: const Size(200, 50), // Размер кнопки
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10), // Скругленные углы
+              ),
+            ),
+            onPressed: () {
+              AuthManager.setUserLoggedIn(false); // Раскомментируйте, если нужно
+
+              if (mounted) {
+                Navigator.pushNamedAndRemoveUntil(
+                context, 
+                '/login', 
+                (route) => false
+                );
+              }
+            },
+            child: const Text('OK'),
+          ),
+        ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,8 +119,7 @@ class _TestsListScreenState extends State<TestsListScreen> {
               color: Colors.white, // Белый цвет иконки logout
             ),
             onPressed: () {
-              AuthManager.setUserLoggedIn(false); // Раскомментируйте, если нужно
-              Navigator.pushReplacementNamed(context, '/login');
+              _exitWarning1();
             },
           )
         ],
