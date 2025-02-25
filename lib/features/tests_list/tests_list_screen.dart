@@ -13,9 +13,9 @@ class _TestsListScreenState extends State<TestsListScreen> {
     0: "Тест Мюнстерберга",
     1: "Тест \"Ласточка\"",
     2: "Тест \"Запоминание чисел\"",
-    3: "Тест \"Пятнашки\"",
-    4: "Тест Струпа", 
-    5: "Компьютерная кампиметрия", 
+    3: "Тест Струпа", 
+    4: "Компьютерная кампиметрия", 
+    5: "Тест \"Пятнашки\"",
   };
 
   @override
@@ -43,17 +43,17 @@ class _TestsListScreenState extends State<TestsListScreen> {
     }
     if (testIndex == 3) {
       Navigator.of(context).pushNamed(
-        '/testList/tagTestDescription',
+        '/testList/strupTestDescription', 
       );
     }
     if (testIndex == 4) {
       Navigator.of(context).pushNamed(
-        '/testList/strupTestDescription', 
+        '/testList/compTestDescription',
       );
     }
     if (testIndex == 5) {
       Navigator.of(context).pushNamed(
-        '/testList/compTestDescription', 
+        '/testList/tagTestDescription', 
       );
     }
   }
