@@ -49,6 +49,18 @@ class _StrupTestDescriptionScreenState extends State<StrupTestDescriptionScreen>
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
+                  'Внимательно прочитайте задание',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22, 
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 207, 52, 187), 
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
                   '''Описание теста:\n\nТест проходит в 3 этапа. На 1 этапе вам предстоит выбрать показанный цвет
                   ''',
                   textAlign: TextAlign.center,

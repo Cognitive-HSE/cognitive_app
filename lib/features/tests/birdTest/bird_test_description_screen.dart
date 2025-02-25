@@ -38,12 +38,25 @@ class _BirdTestDescriptionScreenState extends State<BirdTestDescriptionScreen> {
           },
         ),
       ),
-      body: Container(
+            body: Container(
         color: Color(0xFF373737), // Фон страницы
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Внимательно прочитайте задание',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22, 
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 207, 52, 187), 
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10), 
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(

@@ -48,6 +48,18 @@ class _MunstTestDescriptionScreenState
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
+                  'Внимательно прочитайте задание',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22, 
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 207, 52, 187), 
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
                   'Описание теста:\n\n'
                   'Среди буквенного текста имеются слова. Ваша задача - просматривая строку за строкой, как можно быстрее найти эти слова и выделить их нажатием на каждую букву из найденного слова.\nВажно: 1) слова могут переноситься из одной строки в другую, то есть не обязательно на одной строке будет полное слово.\n2) Прокрутите пальцем область с буквами вниз, чтобы увидеть все буквы',
 

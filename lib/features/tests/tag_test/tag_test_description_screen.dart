@@ -48,6 +48,18 @@ class _TagTestDescriptionScreenState extends State<TagTestDescriptionScreen> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
+                  'Внимательно прочитайте задание',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22, 
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 207, 52, 187), 
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
                   '''Описание теста: \n
                   Пятнашки — это головоломка на поле 4x4, состоящая из 15 костяшек и одной пустой клетки.
                   \nЦель игры: упорядочить костяшки по возрастанию, начиная с левого верхнего угла. Нажимайте на костяшки рядом с пустой клеткой, чтобы перемещать их. Задача — собрать головоломку за наименьшее количество ходов.

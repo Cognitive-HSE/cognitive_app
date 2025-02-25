@@ -49,6 +49,18 @@ class _NumberTestDescriptionScreenState extends State<NumberTestDescriptionScree
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
+                  'Внимательно прочитайте задание',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22, 
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 207, 52, 187), 
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
                   'Описание теста:\n\n'
                   'Вам будут показаны числа. Запомните их и запишите в указанном порядке',
                   textAlign: TextAlign.center,

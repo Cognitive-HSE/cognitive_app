@@ -49,6 +49,18 @@ class _CampimetryDescriptionScreenState
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
+                  'Внимательно прочитайте задание',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22, 
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 207, 52, 187), 
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
                   '''Описание теста: \nНа первом этапе нужно нажимать кнопку "Добавить оттенок" пока силуэт не 
                   станет полностью видимым. После этого нужно выбрать силуэт. На втором этапе нужно нажимать 
                   кнопку "Убавить оттенок", пока силуэт не станет полностью невидимым, и когда решите, 
