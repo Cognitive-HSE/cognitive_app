@@ -86,6 +86,60 @@ void _exitWarning1() {
                 ),
               ),
               onPressed: () {
+                Navigator.pop(context); // Закрываем диалоговое окно
+                _exitWarning2();
+              },
+              child: const Text('Выйти'),
+            ),
+            TextButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 221, 20, 20), // Цвет кнопки "Отмена"
+                foregroundColor: Colors.white,
+                minimumSize: const Size(120, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context); // Закрываем диалоговое окно
+              },
+              child: const Text('Отмена'),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+void _exitWarning2() {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => AlertDialog(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "Вы уверены, что хотите выйти из приложения?",
+            style: TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Равномерное распределение кнопок
+          children: [
+            TextButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[700],
+                foregroundColor: Colors.white,
+                minimumSize: const Size(120, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
                 AuthManager.setUserLoggedIn(false);
                 if (mounted) {
                   Navigator.pushNamedAndRemoveUntil(
