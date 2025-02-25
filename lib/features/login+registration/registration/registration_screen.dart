@@ -152,7 +152,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 controller: _nameController,
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
-                    hintText: 'Придумайте никнейм',
+                    hintText: 'Придумайте логин',
                     hintStyle: TextStyle(color: Colors.grey),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14)),
