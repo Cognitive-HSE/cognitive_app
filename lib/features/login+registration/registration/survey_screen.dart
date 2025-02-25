@@ -332,7 +332,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
               ),
               const SizedBox(height: 16),
               _buildSwitchField(
-                label: 'Являетесь ли геймером',
+                label: 'Являетесь ли любителем компьютерных игр',
                 value: _gamer,
                 onChanged: (value) => setState(() => _gamer = value),
               ),
