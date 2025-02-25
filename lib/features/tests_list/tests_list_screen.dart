@@ -58,48 +58,66 @@ class _TestsListScreenState extends State<TestsListScreen> {
     }
   }
 
-  void _exitWarning1() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min, // Чтобы колонка не занимала всё пространство
-          children: [
-           // SizedBox(height: 10), // Отступ между текстами
-            Text("Запомните свой логин и пароль, приложение не сохраняет эти данные. При повторном входе вам придется вводить логин и пароль заново", 
-              style: TextStyle(fontSize: 16)),
-          ],
-        ),
-        actions: [
-        Center( // Центрируем кнопку
-          child: TextButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey[700], // Цвет кнопки
-              foregroundColor: Colors.white, // Цвет текста
-              minimumSize: const Size(200, 50), // Размер кнопки
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10), // Скругленные углы
-              ),
-            ),
-            onPressed: () {
-              AuthManager.setUserLoggedIn(false); // Раскомментируйте, если нужно
-
-              if (mounted) {
-                Navigator.pushNamedAndRemoveUntil(
-                context, 
-                '/login', 
-                (route) => false
-                );
-              }
-            },
-            child: const Text('OK'),
+void _exitWarning1() {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => AlertDialog(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "Запомните свой логин и пароль, приложение не сохраняет эти данные. При повторном входе вам придется вводить логин и пароль заново",
+            style: TextStyle(fontSize: 16),
           ),
-        ),
         ],
       ),
-    );
-  }
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Равномерное распределение кнопок
+          children: [
+            TextButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[700],
+                foregroundColor: Colors.white,
+                minimumSize: const Size(120, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                AuthManager.setUserLoggedIn(false);
+                if (mounted) {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/login',
+                    (route) => false,
+                  );
+                }
+              },
+              child: const Text('Выйти'),
+            ),
+            TextButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 221, 20, 20), // Цвет кнопки "Отмена"
+                foregroundColor: Colors.white,
+                minimumSize: const Size(120, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context); // Закрываем диалоговое окно
+              },
+              child: const Text('Отмена'),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
