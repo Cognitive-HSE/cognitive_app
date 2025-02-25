@@ -58,6 +58,67 @@ class _TestsListScreenState extends State<TestsListScreen> {
     }
   }
 
+void _exitWarning1() {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => AlertDialog(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "Запомните свой логин и пароль, приложение не сохраняет эти данные. При повторном входе вам придется вводить логин и пароль заново",
+            style: TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Равномерное распределение кнопок
+          children: [
+            TextButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[700],
+                foregroundColor: Colors.white,
+                minimumSize: const Size(120, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                AuthManager.setUserLoggedIn(false);
+                if (mounted) {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/login',
+                    (route) => false,
+                  );
+                }
+              },
+              child: const Text('Выйти'),
+            ),
+            TextButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 221, 20, 20), // Цвет кнопки "Отмена"
+                foregroundColor: Colors.white,
+                minimumSize: const Size(120, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context); // Закрываем диалоговое окно
+              },
+              child: const Text('Отмена'),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,8 +137,7 @@ class _TestsListScreenState extends State<TestsListScreen> {
               color: Colors.white, // Белый цвет иконки logout
             ),
             onPressed: () {
-              AuthManager.setUserLoggedIn(false); // Раскомментируйте, если нужно
-              Navigator.pushReplacementNamed(context, '/login');
+              _exitWarning1();
             },
           )
         ],
