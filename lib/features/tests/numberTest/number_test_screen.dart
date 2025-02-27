@@ -138,11 +138,24 @@ class _NumberTestScreenState extends State<NumberTestScreen> {
 
   void finishTestMessage() {
     resultsToDB();
+    String feedback;
+    double percentage = (rightAnswers / allAnswers) * 100;
+
+    if (percentage >= 80) {
+      feedback = "Великолепно! У вас прекрасная память на числа!";
+    } else if (percentage >= 50) {
+      feedback = "Хорошо, Вы можете лучше! Тренируйте память с нашими тестами.";
+    } else {
+      feedback =
+          "Не расстраивайтесь! Продолжайте тренироваться.";
+    }
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
-        content: Text("Количество правильных ответов: $rightAnswers"),
+        title: const Text('Результаты теста'),
+        content: Text("Количество правильных ответов: $rightAnswers из $allAnswers\n$feedback"),
         actions: [
           TextButton(
             style: ElevatedButton.styleFrom(

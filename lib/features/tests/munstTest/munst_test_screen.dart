@@ -97,11 +97,24 @@ class _MunstTestScreenState extends State<MunstTestScreen> {
   }
 
   void _dialog() {
+    String feedback = '';
+    if (foundWords == wordsToFind.length) {
+      feedback = "Превосходно! Вы нашли все слова.";
+    } else if (foundWords > wordsToFind.length / 2) {
+      feedback =
+          "Хороший результат! Вы нашли больше половины слов.  Продолжайте тренироваться!";
+    } else {
+      feedback =
+          "Неплохо, но есть куда стремиться. Внимательнее рассматривайте буквенный ряд.";
+    }
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
-        content: Text("Найдено слов: $foundWords\nВремя в секундах: $seconds"),
+        title: const Text('Результаты теста'),
+        content: Text(
+            "Найдено слов: $foundWords из ${wordsToFind.length}\nВремя в секундах: $seconds\n\n$feedback"),
         actions: [
           TextButton(
               style: ElevatedButton.styleFrom(

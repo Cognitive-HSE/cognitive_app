@@ -134,7 +134,16 @@ class _CampimetryScreenState extends State<CampimetryScreen>
                 Text(
                   isCorrect
                       ? 'Вы верно распознали животное.'
-                      : 'Ваш выбор неверный.',
+                      : 'Ваш выбор неверный. Попробуйте еще раз, внимательнее присматриваясь к силуэту.',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                // Добавляем информацию о количестве нажатий и времени
+                Text(
+                  'Количество нажатий: $_tapCountStage1',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'Время: ${_durationStage1?.inSeconds ?? 0} секунд',
                   style: const TextStyle(color: Colors.white),
                 ),
               ],
@@ -233,9 +242,20 @@ class _CampimetryScreenState extends State<CampimetryScreen>
       _showResultsDialog(context);
     }
   }
-
-  // Метод для отображения диалога с результатами
   Future<void> _showResultsDialog(BuildContext context) async {
+    String stage2Feedback;
+
+    if (_deviation.abs() <= 10) {
+      stage2Feedback =
+          "Отличный результат! Вы очень точно подобрали оттенок."; // Близко к цели
+    } else if (_deviation > 10) {
+      stage2Feedback =
+          "Вы немного переусердствовали с убавлением оттенка. Попробуйте в следующий раз быть аккуратнее."; // Перестарался
+    } else {
+      stage2Feedback =
+          "Вам немного не хватило нажатий.  В следующий раз попробуйте более точно подобрать момент."; // Недоусердствовал
+    }
+
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -270,6 +290,8 @@ class _CampimetryScreenState extends State<CampimetryScreen>
                     style: const TextStyle(color: Colors.white)),
                 Text('Нажатий: $_tapCountStage2',
                     style: const TextStyle(color: Colors.white)),
+                Text(stage2Feedback,
+                    style: const TextStyle(color: Colors.white)), // Отображаем отклонение
               ],
             ),
           ),
