@@ -86,9 +86,18 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
 
   void showGameOverScreen() {
     var accuracy = 0;
+    String message = ""; // Add this line
     if (allAnswers != 0) {
-    accuracy = (rightAnswers/allAnswers * 100).round();
-    } 
+      accuracy = (rightAnswers / allAnswers * 100).round();
+    }
+
+    if (accuracy < 50) {
+      message = "Будьте внимательнее, попробуйте пройти тест ещё раз!";
+    } else if (accuracy >= 50 && accuracy <= 80) {
+      message = "Хороший результат! Не останавливайтесь";
+    } else {
+      message = "Отличный результат!";
+    }
 
     //результат в бд
     resultsToDB();
@@ -98,8 +107,8 @@ class _BirdtestScreenState extends State<BirdtestScreen> {
           barrierDismissible: false,
           builder: (_) => AlertDialog(
             content: Text(
-              "Тест завершен!\nПравильно: $rightAnswers из $allAnswers\nТочность: $accuracy%"
-              ),
+                "Тест завершен!\nПравильно: $rightAnswers из $allAnswers\nТочность: $accuracy%\n\n$message"
+            ),
             actions: [
               TextButton(
                 style: ElevatedButton.styleFrom(

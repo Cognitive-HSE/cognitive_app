@@ -176,8 +176,21 @@ class _StrupTestScreenState extends State<StrupTestScreen> {
     }
   }
 
+  String _getResultComment(int correctAnswers) {
+    if (correctAnswers <= 6) {
+      return "Не расстраивайтесь! Немного практики, и все получится!";
+    } else if (correctAnswers <= 12) {
+      return "Неплохо! Попробуйте ещё раз, чтобы достичь лучшего результата!";
+    } else if (correctAnswers <= 16) {
+      return "Отличный результат! Вы показываете хорошие способности!";
+    } else {
+      return "Превосходно! Вы мастер теста Струпа!";
+    }
+  }
+
   void _showResult() {
     resultsToDB();
+    String resultComment = _getResultComment(correctAnswers);
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -185,7 +198,18 @@ class _StrupTestScreenState extends State<StrupTestScreen> {
         onWillPop: () async => false,
         child: AlertDialog(
           title: const Text("Тест завершен!"),
-          content: Text("Правильных ответов: $correctAnswers из 18"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Правильных ответов: $correctAnswers из 18", style: const TextStyle(fontSize: 16)),
+              const SizedBox(height: 10),
+              Text(
+                resultComment,
+                style: const TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
           
           actions: [
             TextButton(
@@ -200,7 +224,7 @@ class _StrupTestScreenState extends State<StrupTestScreen> {
               onPressed: () {
                 Navigator.pushNamedAndRemoveUntil(
                   context,
-                  '/testList',
+'/testList',
                   (route) => false,
                 );
               },
